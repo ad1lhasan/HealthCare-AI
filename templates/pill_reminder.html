@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+{% block title %}Pill Reminder{% endblock %}
+{% block content %}
+<div class="back-btn-container"><a href="{{ url_for('home') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back</a></div>
+<div class="pill-reminder-container">
+    <div class="pill-reminder-header">
+        <h2><i class="fa fa-bell"></i> Pill Reminders</h2>
+        <p class="pill-reminder-desc">Stay on track with your medication. All your pill reminders are listed below. You will also receive notifications for each reminder.</p>
+    </div>
+    <div class="pill-reminder-form-card">
+        <form method="POST" class="pill-reminder-form">
+            <div class="pill-form-group">
+                <label for="pill_name">Pill Name</label>
+                <input type="text" name="pill_name" id="pill_name" required placeholder="e.g. Paracetamol">
+            </div>
+            <div class="pill-form-group">
+                <label for="dosage">Dosage</label>
+                <input type="text" name="dosage" id="dosage" required placeholder="e.g. 500mg">
+            </div>
+            <div class="pill-form-group">
+                <label for="time">Time</label>
+                <input type="time" name="time" id="time" required>
+            </div>
+            <button type="submit" class="pill-reminder-btn">Add Reminder</button>
+        </form>
+    </div>
+    <div class="pill-reminder-list-card">
+        <h3 class="pill-reminder-list-title"><i class="fa fa-list"></i> Your Pill Reminders</h3>
+        {% if reminders and reminders|length > 0 %}
+        <div class="pill-reminder-table-wrapper">
+            <table class="pill-reminder-table">
+                <thead>
+                    <tr>
+                        <th>Pill Name</th>
+                        <th>Dosage</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reminder in reminders %}
+                    <tr>
+                        <td>{{ reminder.pill_name }}</td>
+                        <td>{{ reminder.dosage }}</td>
+                        <td>{{ reminder.reminder_time.strftime('%H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="pill-reminder-empty">No pill reminders set yet.</div>
+        {% endif %}
+    </div>
+    <div class="pill-reminder-notification-section">
+        <h4><i class="fa fa-bell-o"></i> Pill Reminder Notifications</h4>
+        {% if reminders and reminders|length > 0 %}
+        <ul class="pill-reminder-notif-list">
+            {% for reminder in reminders %}
+            <li class="pill-reminder-notif-item">
+                <span class="pill-reminder-notif-pill"><i class="fa fa-medkit"></i> {{ reminder.pill_name }}</span>
+                <span class="pill-reminder-notif-dosage">({{ reminder.dosage }})</span>
+                <span class="pill-reminder-notif-time"><i class="fa fa-clock-o"></i> {{ reminder.time }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="pill-reminder-notif-info">You will receive a notification for each pill at the specified time.</div>
+        {% else %}
+        <div class="pill-reminder-notif-empty">No pill reminders to notify.</div>
+        {% endif %}
+    </div>
+</div>
+<style>
+.back-btn-container {
+    margin-bottom: 12px;
+}
+.back-btn {
+    display: inline-block;
+    background: #f8fafc;
+    color: #4f8cff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 18px;
+    text-decoration: none;
+    font-size: 1.05rem;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
+    transition: background 0.2s, color 0.2s;
+}
+.back-btn i {
+    margin-right: 8px;
+}
+.back-btn:hover {
+    background: #4f8cff;
+    color: #fff;
+}
+.pill-reminder-container {
+    max-width: 900px;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(44, 62, 80, 0.10);
+    padding: 32px 36px 36px 36px;
+}
+.pill-reminder-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.pill-reminder-header h2 {
+    color: #4f8cff;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.pill-reminder-desc {
+    color: #2d3e50;
+    font-size: 1.08rem;
+    margin-bottom: 0;
+}
+.pill-reminder-form-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    margin-bottom: 32px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.pill-reminder-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1em;
+}
+.pill-form-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3e50;
+}
+.pill-form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+.pill-form-group input:focus {
+    border: 1.5px solid #4f8cff;
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.pill-reminder-btn {
+    margin-top: 0.5em;
+    padding: 10px 0;
+    width: 100%;
+    background: #4f8cff;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+}
+.pill-reminder-btn:hover {
+    background: #2d3e50;
+}
+.pill-reminder-list-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    margin-bottom: 32px;
+}
+.pill-reminder-list-title {
+    color: #4f8cff;
+    font-weight: 700;
+    margin-bottom: 1.2em;
+    text-align: center;
+}
+.pill-reminder-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+.pill-reminder-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+.pill-reminder-table th, .pill-reminder-table td {
+    padding: 0.7em 1em;
+    text-align: left;
+    border-bottom: 1px solid #e3e8ee;
+}
+.pill-reminder-table th {
+    background: #f0f7ff;
+    color: #4f8cff;
+    font-weight: 600;
+}
+.pill-reminder-table tr:last-child td {
+    border-bottom: none;
+}
+.pill-reminder-empty {
+    color: #b0b8c1;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-top: 1em;
+}
+.pill-reminder-notification-section {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    margin-bottom: 0;
+}
+.pill-reminder-notification-section h4 {
+    color: #4f8cff;
+    font-weight: 700;
+    margin-bottom: 1em;
+}
+.pill-reminder-notif-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1em 0;
+}
+.pill-reminder-notif-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+    font-size: 1.05rem;
+    color: #2d3e50;
+    box-shadow: 0 1px 2px rgba(44, 62, 80, 0.04);
+}
+.pill-reminder-notif-pill {
+    color: #4f8cff;
+    font-weight: 700;
+}
+.pill-reminder-notif-dosage {
+    color: #2d3e50;
+    font-weight: 500;
+}
+.pill-reminder-notif-time {
+    color: #38b6ff;
+    font-weight: 600;
+    margin-left: auto;
+}
+.pill-reminder-notif-info {
+    color: #888;
+    font-size: 0.98rem;
+    margin-top: 0.5em;
+    text-align: center;
+}
+.pill-reminder-notif-empty {
+    color: #b0b8c1;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-top: 1em;
+}
+@media (max-width: 700px) {
+    .pill-reminder-container {
+        padding: 16px 4px 18px 4px;
+    }
+    .pill-reminder-form-card, .pill-reminder-list-card, .pill-reminder-notification-section {
+        padding: 14px 4px 10px 4px;
+    }
+}
+</style>
+{% endblock %} 

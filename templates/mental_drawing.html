@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block title %}Creative Drawing{% endblock %}
+{% block content %}
+<div class="mh-dashboard-dark">
+    <div class="mh-feature-page drawing-center">
+        <a href="{{ url_for('mental_health') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="drawing-card">
+            <div class="drawing-header">
+                <span class="drawing-icon"><i class="fa fa-pencil"></i></span>
+                <h2 class="drawing-title">Creative Drawing Pad</h2>
+            </div>
+            <div class="drawing-desc">
+                Express yourself with a digital drawing pad. Choose your tool, color, and brush size to create your masterpiece!
+            </div>
+            <div class="drawing-controls">
+                <div class="drawing-tools">
+                    <label for="pen-type">Tool:</label>
+                    <select id="pen-type">
+                        <option value="pen">Pen</option>
+                        <option value="pencil">Pencil</option>
+                        <option value="marker">Marker</option>
+                        <option value="highlighter">Highlighter</option>
+                    </select>
+                </div>
+                <div class="drawing-brush">
+                    <label for="brush-size">Brush Size:</label>
+                    <input type="range" id="brush-size" min="1" max="24" value="4">
+                    <span id="brush-size-value">4</span> px
+                </div>
+                <div class="drawing-colors">
+                    <label>Color:</label>
+                    <input type="color" id="color-picker" value="#4f8cff">
+                </div>
+            </div>
+            <canvas id="drawing-pad" width="420" height="280" class="drawing-pad"></canvas>
+            <div class="drawing-btn-row">
+                <button type="button" class="drawing-btn clear-btn" onclick="clearDrawingPad()"><i class="fa fa-eraser"></i> Clear</button>
+                <a href="https://sketch.io/sketchpad/" target="_blank" class="drawing-btn external-btn"><i class="fa fa-external-link"></i> Draw Now (External)</a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.mh-dashboard-dark {
+    background: #181c24;
+    color: #eaf0fa;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.mh-feature-page.drawing-center {
+    max-width: 600px;
+    margin: 60px auto 60px auto;
+    background: #23283a;
+    border-radius: 22px;
+    box-shadow: 0 8px 36px rgba(30,40,60,0.22);
+    padding: 44px 36px 36px 36px;
+    color: #eaf0fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.back-btn {
+    color: #4f8cff;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: inline-block;
+    font-size: 1.08rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+}
+.back-btn:hover {
+    color: #7ed957;
+    text-decoration: underline;
+}
+.drawing-card {
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    padding: 32px 24px 28px 24px;
+    color: #eaf0fa;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.drawing-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.drawing-icon {
+    font-size: 2.3rem;
+    color: #7ed957;
+    margin-bottom: 8px;
+}
+.drawing-title {
+    color: #4f8cff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0;
+}
+.drawing-desc {
+    color: #eaf0fa;
+    font-size: 1.08rem;
+    margin-bottom: 18px;
+    margin-top: 6px;
+}
+.drawing-controls {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.drawing-tools label, .drawing-brush label, .drawing-colors label {
+    color: #7ed957;
+    font-weight: 600;
+    margin-right: 6px;
+}
+.drawing-tools select, .drawing-brush input[type=range], .drawing-colors input[type=color] {
+    background: #23283a;
+    color: #4f8cff;
+    border: 1.5px solid #4f8cff;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 1.01rem;
+    margin-right: 4px;
+}
+.drawing-brush input[type=range] {
+    width: 80px;
+    vertical-align: middle;
+}
+#brush-size-value {
+    color: #4f8cff;
+    font-weight: 700;
+    margin-left: 4px;
+}
+.drawing-pad {
+    background: #181c24;
+    border: 2.5px solid #4f8cff;
+    border-radius: 14px;
+    margin-top: 10px;
+    cursor: crosshair;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.13);
+    width: 420px;
+    height: 280px;
+    transition: border 0.2s;
+}
+.drawing-btn-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 18px;
+    width: 100%;
+}
+.drawing-btn.clear-btn, .drawing-btn.external-btn {
+    background: linear-gradient(90deg, #4f8cff 0%, #38b6ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    padding: 10px 28px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+}
+.drawing-btn.clear-btn:hover, .drawing-btn.external-btn:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #4f8cff 100%);
+}
+</style>
+<script>
+const canvas = document.getElementById('drawing-pad');
+const penType = document.getElementById('pen-type');
+const brushSize = document.getElementById('brush-size');
+const brushSizeValue = document.getElementById('brush-size-value');
+const colorPicker = document.getElementById('color-picker');
+
+let drawing = false;
+let lastX = 0;
+let lastY = 0;
+let currentColor = colorPicker ? colorPicker.value : '#4f8cff';
+let currentBrush = brushSize ? parseInt(brushSize.value) : 4;
+let currentPen = penType ? penType.value : 'pen';
+
+if (brushSize && brushSizeValue) {
+    brushSize.addEventListener('input', function() {
+        brushSizeValue.textContent = this.value;
+        currentBrush = parseInt(this.value);
+    });
+}
+if (colorPicker) {
+    colorPicker.addEventListener('input', function() {
+        currentColor = this.value;
+    });
+}
+if (penType) {
+    penType.addEventListener('change', function() {
+        currentPen = this.value;
+    });
+}
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    canvas.addEventListener('mousedown', e => {
+        drawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+    });
+    canvas.addEventListener('mousemove', e => {
+        if (drawing) {
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            // Pen type logic
+            switch(currentPen) {
+                case 'pen':
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = currentBrush;
+                    break;
+                case 'pencil':
+                    ctx.globalAlpha = 0.6;
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = Math.max(1, currentBrush * 0.7);
+                    break;
+                case 'marker':
+                    ctx.globalAlpha = 0.85;
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = currentBrush * 1.5;
+                    break;
+                case 'highlighter':
+                    ctx.globalAlpha = 0.35;
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = currentBrush * 2.2;
+                    break;
+            }
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        }
+    });
+    canvas.addEventListener('mouseup', () => {
+        drawing = false;
+        ctx.beginPath();
+    });
+    canvas.addEventListener('mouseleave', () => {
+        drawing = false;
+        ctx.beginPath();
+    });
+}
+function clearDrawingPad() {
+    const canvas = document.getElementById('drawing-pad');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+}
+</script>
+{% endblock %} 

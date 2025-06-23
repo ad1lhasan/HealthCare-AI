@@ -1,0 +1,534 @@
+{% extends "base.html" %}
+{% block title %}Edit User{% endblock %}
+{% block content %}
+<div class="edit-user-container fullscreen-edit-user">
+    <div class="edit-user-header edit-user-header-centered">
+        <h2>Edit User</h2>
+        <div class="edit-user-actions-top">
+            <form action="{{ url_for('block_user', user_id=user.id) }}" method="post" style="display:inline;">
+                <button type="submit" class="small-action-btn block-btn" title="{% if user.blocked %}Unblock{% else %}Block{% endif %} User">
+                    {% if user.blocked %}Unblock{% else %}Block{% endif %}
+                </button>
+            </form>
+            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+                <button type="submit" class="small-action-btn delete-btn" title="Delete User" onclick="return confirm('Are you sure you want to delete this user? This action cannot be undone.')">
+                    Delete
+                </button>
+            </form>
+        </div>
+        <span class="edit-user-status">Status: {% if user.blocked %}<span class="blocked">Blocked</span>{% else %}<span class="active">Active</span>{% endif %}</span>
+    </div>
+    <form method="POST" class="user-health-form-sidebyside" enctype="multipart/form-data">
+        <div class="user-details-box">
+            <h3>User Details</h3>
+            <div class="mb-3 d-flex flex-column align-items-center">
+                <img src="{{ url_for('static', filename=profile_picture) }}" alt="Profile Picture" class="rounded-circle border" style="width: 90px; height: 90px; object-fit: cover; background: #f7fafd;">
+                <input type="file" class="form-control mt-2" style="width: 100%;" accept="image/*" name="profile_picture">
+                <small class="text-muted mt-1">Upload profile picture</small>
+            </div>
+            <label>Full Name</label>
+            <input type="text" name="full_name" value="{{ user.full_name or '' }}" required><br>
+            <label>Email</label>
+            <input type="email" name="email" value="{{ user.email or '' }}" required><br>
+            <label>Age</label>
+            <input type="number" name="age" value="{{ user.age or '' }}" min="0" max="120" required><br>
+            <label>Gender</label>
+            <select name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+                <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+            </select><br>
+            <label>Phone Number</label>
+            <input type="text" name="phone_number" value="{{ user.phone_number or '' }}" required><br>
+        </div>
+        <div class="health-details-box">
+            <h3>Health Details</h3>
+            <div class="health-details-grid">
+                <div>
+                    <label>Height (cm)</label>
+                    <input type="number" name="height_cm" value="{{ health.height_cm or '' }}" min="0" step="0.1">
+                </div>
+                <div>
+                    <label>Weight (kg)</label>
+                    <input type="number" name="weight_kg" value="{{ health.weight_kg or '' }}" min="0" step="0.1">
+                </div>
+                <div>
+                    <label>Blood Group</label>
+                    <select name="blood_group" class="blood-group-select">
+                        <option value="">Select Blood Group</option>
+                        <option value="A+" {% if health.blood_group == 'A+' %}selected{% endif %}>A+</option>
+                        <option value="A-" {% if health.blood_group == 'A-' %}selected{% endif %}>A-</option>
+                        <option value="B+" {% if health.blood_group == 'B+' %}selected{% endif %}>B+</option>
+                        <option value="B-" {% if health.blood_group == 'B-' %}selected{% endif %}>B-</option>
+                        <option value="AB+" {% if health.blood_group == 'AB+' %}selected{% endif %}>AB+</option>
+                        <option value="AB-" {% if health.blood_group == 'AB-' %}selected{% endif %}>AB-</option>
+                        <option value="O+" {% if health.blood_group == 'O+' %}selected{% endif %}>O+</option>
+                        <option value="O-" {% if health.blood_group == 'O-' %}selected{% endif %}>O-</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Allergies</label>
+                    <input type="text" name="allergies" value="{{ health.allergies or '' }}">
+                </div>
+                <div>
+                    <label>Chronic Conditions</label>
+                    <input type="text" name="chronic_conditions" value="{{ health.chronic_conditions or '' }}">
+                </div>
+                <div>
+                    <label>Medications</label>
+                    <input type="text" name="medications" value="{{ health.medications or '' }}">
+                </div>
+            </div>
+        </div>
+        <div class="edit-user-actions-centered">
+            <button type="submit" class="admin-btn save">Save Changes</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="admin-btn cancel">Cancel</a>
+        </div>
+    </form>
+    
+    {% if user_activities %}
+    <div class="recent-activities-section">
+        <h3><i class="fa fa-history"></i> Recent Activities</h3>
+        <div class="activities-container">
+            {% for activity in user_activities %}
+            <div class="activity-item">
+                <div class="activity-content">
+                    <span class="activity-action">{{ activity.action }}</span>
+                    <span class="activity-time">{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="no-activities">No activities recorded yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="appointments-section">
+        <h3><i class="fa fa-calendar"></i> Appointments</h3>
+        <div class="appointments-container">
+            {% if user_appointments %}
+                {% for appointment in user_appointments %}
+                <div class="appointment-item">
+                    <div class="appointment-content">
+                        <div class="appointment-main">
+                            <span class="appointment-doctor">Dr. {{ appointment.doctor }}</span>
+                            <span class="appointment-department">{{ appointment.department }}</span>
+                        </div>
+                        <div class="appointment-details">
+                            <span class="appointment-date">{{ appointment.date }}</span>
+                            <span class="appointment-time">{{ appointment.time }}</span>
+                        </div>
+                        {% if appointment.reason %}
+                        <div class="appointment-reason">
+                            <span class="reason-label">Reason:</span>
+                            <span class="reason-text">{{ appointment.reason }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-appointments">No appointments scheduled.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<style>
+.fullscreen-edit-user {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    padding: 2.5em 2vw 2em 2vw;
+    box-sizing: border-box;
+    background: #f4f8fc;
+    min-height: 100vh;
+}
+.edit-user-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    justify-content: space-between;
+    margin-bottom: 1.5em;
+}
+.edit-user-header-centered {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.5em;
+}
+.edit-user-header-centered h2 {
+    margin: 0 0 0.5em 0;
+    display: block;
+    font-size: 2rem;
+}
+.edit-user-actions-top {
+    display: flex;
+    gap: 0.7em;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.2em;
+}
+.edit-user-status {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 0.5em;
+}
+.small-action-btn {
+    font-size: 0.92rem;
+    padding: 2px 12px;
+    border-radius: 6px;
+    border: 1px solid #e3e8ee;
+    background: transparent;
+    color: #4f8cff;
+    margin-left: 6px;
+    margin-right: 2px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s, border 0.15s;
+    outline: none;
+    min-width: 0;
+    min-height: 0;
+    line-height: 1.2;
+    display: inline-block;
+}
+.small-action-btn.block-btn {
+    color: #ff9800;
+    border-color: #ffe0b2;
+    background: transparent;
+}
+.small-action-btn.block-btn:hover {
+    background: #fff8e1;
+    color: #b26a00;
+}
+.small-action-btn.delete-btn {
+    color: #e53935;
+    border-color: #ffcdd2;
+    background: transparent;
+}
+.small-action-btn.delete-btn:hover {
+    background: #fff0f1;
+    color: #b71c1c;
+}
+.user-health-form-sidebyside {
+    display: flex;
+    flex-direction: row;
+    gap: 2.5em;
+    margin-top: 2em;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+}
+.user-details-box, .health-details-box {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
+    padding: 2em 1.5em 1.5em 1.5em;
+    min-width: 320px;
+    flex: 1 1 420px;
+    max-width: 600px;
+    border: 1.5px solid #e3e8ee;
+}
+.user-details-box h3, .health-details-box h3 {
+    margin-top: 0;
+    margin-bottom: 1em;
+    font-size: 1.15rem;
+    color: #4f8cff;
+    font-weight: 700;
+}
+.health-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.2em 1.2em;
+    margin-bottom: 0.5em;
+}
+.health-details-grid label {
+    font-size: 0.98rem;
+    font-weight: 500;
+    margin-bottom: 0.2em;
+    display: block;
+}
+.health-details-grid input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f8fafc;
+    margin-bottom: 0.2em;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+.health-details-grid input:focus {
+    border: 1.5px solid #4f8cff;
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.edit-user-actions-centered {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5em;
+    margin-top: 2em;
+    grid-column: 1/-1;
+}
+@media (max-width: 1200px) {
+    .user-details-box, .health-details-box {
+        min-width: 260px;
+        max-width: 100%;
+    }
+}
+@media (max-width: 900px) {
+    .user-health-form-sidebyside {
+        flex-direction: column;
+        gap: 2em;
+    }
+    .fullscreen-edit-user {
+        padding: 1.2em 0.5em;
+    }
+    .edit-user-header-centered h2 {
+        font-size: 1.3rem;
+    }
+    .edit-user-actions-centered {
+        flex-direction: column;
+        gap: 1em;
+    }
+    .edit-user-actions-top {
+        flex-direction: column;
+        gap: 0.5em;
+    }
+}
+.user-details-box input,
+.health-details-box input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f8fafc;
+    margin-bottom: 1.1em;
+    margin-top: 0.2em;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    display: block;
+}
+.user-details-box input:focus,
+.health-details-box input:focus,
+.user-details-box select:focus,
+.health-details-box select:focus {
+    border: 1.5px solid #4f8cff;
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.user-details-box label,
+.health-details-box label {
+    margin-bottom: 0.2em;
+    margin-top: 0.5em;
+    display: block;
+    font-size: 0.98rem;
+    font-weight: 500;
+}
+.user-details-box select,
+.health-details-box select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f8fafc;
+    margin-bottom: 1.1em;
+    margin-top: 0.2em;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    display: block;
+    cursor: pointer;
+}
+.recent-activities-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
+    padding: 2em 1.5em 1.5em 1.5em;
+    margin-top: 2em;
+    border: 1.5px solid #e3e8ee;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.recent-activities-section h3 {
+    margin-top: 0;
+    margin-bottom: 1.2em;
+    font-size: 1.15rem;
+    color: #4f8cff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.activities-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    max-height: 400px;
+    overflow-y: auto;
+}
+.activity-item {
+    background: #f8fafc;
+    border: 1px solid #e3e8ee;
+    border-radius: 8px;
+    padding: 1em 1.2em;
+    transition: background 0.2s, border 0.2s;
+}
+.activity-item:hover {
+    background: #f0f7ff;
+    border-color: #4f8cff;
+}
+.activity-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+}
+.activity-action {
+    font-weight: 500;
+    color: #2d3e50;
+    font-size: 0.95rem;
+    flex: 1;
+}
+.activity-time {
+    font-size: 0.85rem;
+    color: #6c757d;
+    white-space: nowrap;
+}
+.no-activities {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 2em;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px dashed #d1d5db;
+}
+.blood-group-select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #f8fafc;
+    margin-bottom: 0.2em;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    cursor: pointer;
+}
+.blood-group-select:focus {
+    border: 1.5px solid #4f8cff;
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.appointments-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
+    padding: 2em 1.5em 1.5em 1.5em;
+    margin-top: 2em;
+    border: 1.5px solid #e3e8ee;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.appointments-section h3 {
+    margin-top: 0;
+    margin-bottom: 1.2em;
+    font-size: 1.15rem;
+    color: #4f8cff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.appointments-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    max-height: 400px;
+    overflow-y: auto;
+}
+.appointment-item {
+    background: #f8fafc;
+    border: 1px solid #e3e8ee;
+    border-radius: 8px;
+    padding: 1em 1.2em;
+    transition: background 0.2s, border 0.2s;
+}
+.appointment-item:hover {
+    background: #f0f7ff;
+    border-color: #4f8cff;
+}
+.appointment-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+.appointment-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+}
+.appointment-doctor {
+    font-weight: 600;
+    color: #2d3e50;
+    font-size: 1rem;
+}
+.appointment-department {
+    font-size: 0.9rem;
+    color: #4f8cff;
+    font-weight: 500;
+}
+.appointment-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+.appointment-date, .appointment-time {
+    background: #e3e8ee;
+    padding: 0.3em 0.6em;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.appointment-reason {
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    border-top: 1px solid #e3e8ee;
+}
+.reason-label {
+    font-weight: 500;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+.reason-text {
+    color: #2d3e50;
+    font-size: 0.9rem;
+    margin-left: 0.5em;
+}
+.no-appointments {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 2em;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px dashed #d1d5db;
+}
+</style>
+{% endblock %} 

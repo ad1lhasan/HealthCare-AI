@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% block title %}Blood Donation{% endblock %}
+{% block content %}
+<div class="back-btn-container"><a href="{{ url_for('home') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back</a></div>
+<div class="blood-donation-outer-center">
+  <div class="blood-donation-container">
+    <div class="blood-donation-header">
+        <h2><i class="fa fa-tint"></i> Blood Donation</h2>
+        <p class="blood-donation-desc">Register as a blood donor and help save lives in your community.</p>
+        <a href="{{ url_for('blood_request') }}" class="go-to-request-btn"><i class="fa fa-ambulance"></i> Need Blood? Make a Request</a>
+    </div>
+    <div class="blood-donation-forms">
+        <div class="donate-blood-form-card">
+            <h3><i class="fa fa-heartbeat"></i> Register as a Blood Donor</h3>
+            {% if donor_success %}<div class="success-message">{{ donor_success }}</div>{% endif %}
+            <form method="POST" class="donate-blood-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" name="name" id="name" placeholder="Your Name" maxlength="150">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" name="age" id="age" min="16" max="120" placeholder="Your Age">
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" name="phone_number" id="phone_number" placeholder="Your Phone Number" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label for="blood_group">Blood Group</label>
+                    <select name="blood_group" id="blood_group" required>
+                        <option value="">Select</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="last_donation">Last Donation Date</label>
+                    <input type="date" name="last_donation" id="last_donation">
+                </div>
+                <button type="submit" class="donate-btn">Register as Donor</button>
+            </form>
+        </div>
+    </div>
+    <div class="blood-donation-lists">
+        <div class="donor-list-card">
+            <h4><i class="fa fa-users"></i> Available Blood Donors</h4>
+            {% if donors and donors|length > 0 %}
+            <div class="donor-table-wrapper">
+                <table class="donor-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Blood Group</th>
+                            <th>Last Donation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for donor in donors %}
+                        <tr>
+                            <td>{{ donor.user.full_name or donor.user.username }}</td>
+                            <td>{{ donor.user.age or '-' }}</td>
+                            <td>{{ donor.user.phone_number or '-' }}</td>
+                            <td>{{ donor.user.email or '-' }}</td>
+                            <td>{{ donor.blood_group }}</td>
+                            <td>{{ donor.last_donation or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-list">No donors registered yet.</div>
+            {% endif %}
+        </div>
+    </div>
+  </div>
+</div>
+<style>
+.blood-donation-outer-center {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.back-btn-container {
+    margin-bottom: 12px;
+}
+.back-btn {
+    display: inline-block;
+    background: #f8fafc;
+    color: #4f8cff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 18px;
+    text-decoration: none;
+    font-size: 1.05rem;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
+    transition: background 0.2s, color 0.2s;
+}
+.back-btn i {
+    margin-right: 8px;
+}
+.back-btn:hover {
+    background: #4f8cff;
+    color: #fff;
+}
+.blood-donation-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(44, 62, 80, 0.10);
+    padding: 32px 36px 36px 36px;
+}
+.blood-donation-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.blood-donation-header h2 {
+    color: #d32f2f;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.blood-donation-desc {
+    color: #2d3e50;
+    font-size: 1.08rem;
+    margin-bottom: 0;
+}
+.blood-donation-forms {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 36px;
+}
+.donate-blood-form-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    max-width: 420px;
+    width: 100%;
+    margin-bottom: 18px;
+}
+.donate-blood-form-card h3 {
+    color: #d32f2f;
+    font-weight: 700;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.form-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3e50;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    margin-bottom: 1em;
+}
+.form-group input:focus, .form-group select:focus {
+    border: 1.5px solid #d32f2f;
+    background: #fff0f0;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.08);
+}
+.donate-btn {
+    margin-top: 0.5em;
+    padding: 10px 0;
+    width: 100%;
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.07);
+}
+.donate-btn:hover {
+    background: #4f8cff;
+}
+.success-message {
+    background: #eaf6ff;
+    color: #1a4b7a;
+    border: 1px solid #b3e0ff;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 1em;
+}
+.blood-donation-lists {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 36px;
+}
+.donor-list-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    max-width: 480px;
+    width: 100%;
+    margin-bottom: 18px;
+}
+.donor-list-card h4 {
+    color: #d32f2f;
+    font-weight: 700;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.donor-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+.donor-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #f8fafc;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+.donor-table th, .donor-table td {
+    padding: 0.7em 1em;
+    text-align: left;
+    border-bottom: 1px solid #e3e8ee;
+}
+.donor-table th {
+    background: #fff0f0;
+    color: #d32f2f;
+    font-weight: 600;
+}
+.donor-table tr:last-child td {
+    border-bottom: none;
+}
+.empty-list {
+    color: #b0b8c1;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-top: 1em;
+}
+.go-to-request-btn {
+    display: inline-block;
+    margin: 18px 0 0 0;
+    padding: 12px 28px;
+    background: linear-gradient(90deg, #d32f2f 0%, #4f8cff 100%);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.go-to-request-btn i {
+    margin-right: 8px;
+}
+.go-to-request-btn:hover {
+    background: linear-gradient(90deg, #4f8cff 0%, #d32f2f 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.13);
+    text-decoration: none;
+}
+@media (max-width: 900px) {
+    .blood-donation-forms, .blood-donation-lists {
+        flex-direction: column;
+        gap: 18px;
+    }
+    .donate-blood-form-card, .donor-list-card {
+        max-width: 100%;
+    }
+}
+</style>
+{% endblock %} 

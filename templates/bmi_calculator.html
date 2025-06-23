@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}BMI Calculator{% endblock %}
+{% block content %}
+<div class="bmi-calc-container">
+    <div class="bmi-calc-card">
+        <h2 class="bmi-calc-title">BMI Calculator</h2>
+        <form method="POST" class="bmi-calc-form">
+            <div class="bmi-input-group">
+                <label for="weight">Weight (kg)</label>
+                <input type="number" name="weight" id="weight" step="0.1" min="1" max="500" required placeholder="Enter your weight">
+            </div>
+            <div class="bmi-input-group">
+                <label for="height">Height (cm)</label>
+                <input type="number" name="height" id="height" step="0.1" min="30" max="300" required placeholder="Enter your height">
+            </div>
+            {% if next_page %}
+            <input type="hidden" name="next" value="{{ next_page }}">
+            {% endif %}
+            <button type="submit" class="bmi-btn">Calculate BMI</button>
+        </form>
+        {% if bmi %}
+        <div class="bmi-result-container">
+            <div class="bmi-result">
+                <span class="bmi-label">Your BMI:</span> <span class="bmi-value">{{ bmi }}</span>
+            </div>
+            {% if next_page == 'diet_plan' %}
+            <a href="{{ url_for('diet_plan') }}" class="bmi-btn" style="margin-top:12px;"><i class="fa fa-cutlery"></i> View My Diet Plan</a>
+            {% endif %}
+            {% if diet_recommendation %}
+            <div class="bmi-diet-advice">
+                {{ diet_recommendation|safe }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+<style>
+.bmi-calc-container {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f4f8fc;
+    padding: 2em 0;
+}
+.bmi-calc-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
+    padding: 2.5em 2.2em 2em 2.2em;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.bmi-calc-title {
+    margin-top: 0;
+    margin-bottom: 1.2em;
+    font-size: 1.7rem;
+    color: #4f8cff;
+    font-weight: 700;
+    text-align: center;
+}
+.bmi-calc-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+}
+.bmi-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+}
+.bmi-input-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3e50;
+}
+.bmi-input-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+.bmi-input-group input:focus {
+    border: 1.5px solid #4f8cff;
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.bmi-btn {
+    margin-top: 0.5em;
+    padding: 10px 0;
+    width: 100%;
+    background: #4f8cff;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+}
+.bmi-btn:hover {
+    background: #2d3e50;
+}
+.bmi-result-container {
+    margin-top: 2em;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2em;
+}
+.bmi-result {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4f8cff;
+    background: #f0f7ff;
+    border-radius: 8px;
+    padding: 0.7em 1.2em;
+    margin-bottom: 0.5em;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
+}
+.bmi-label {
+    font-weight: 500;
+    color: #2d3e50;
+}
+.bmi-value {
+    font-weight: 700;
+    color: #e53935;
+    margin-left: 0.5em;
+}
+.bmi-diet-advice {
+    width: 100%;
+    background: #f8fafc;
+    border: 1.5px solid #e3e8ee;
+    border-radius: 10px;
+    padding: 1.2em 1em 1em 1em;
+    color: #2d3e50;
+    font-size: 1rem;
+    box-shadow: 0 1px 6px rgba(44, 62, 80, 0.06);
+}
+@media (max-width: 600px) {
+    .bmi-calc-card {
+        padding: 1.2em 0.5em 1em 0.5em;
+        max-width: 98vw;
+    }
+    .bmi-result {
+        font-size: 1rem;
+        padding: 0.5em 0.7em;
+    }
+    .bmi-diet-advice {
+        font-size: 0.97rem;
+        padding: 0.7em 0.5em 0.7em 0.5em;
+    }
+}
+</style>
+{% endblock %} 

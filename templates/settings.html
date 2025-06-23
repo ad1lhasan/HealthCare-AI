@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body, .container {
+    background: #f7fafd !important;
+    color: #222;
+}
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(30,144,255,0.07);
+    margin-bottom: 2rem;
+    border: none;
+}
+.card-header {
+    background: linear-gradient(90deg, #1e90ff 0%, #38ef7d 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    box-shadow: 0 2px 8px rgba(30,144,255,0.08);
+}
+.card-header i {
+    font-size: 1.3em;
+}
+.form-control, .form-select {
+    background: #f7fafd;
+    color: #222;
+    border: 1px solid #b6c6e3;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    min-height: 44px;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #1e90ff;
+    box-shadow: 0 0 0 2px #1e90ff22;
+    background: #fff;
+}
+.btn-primary, .btn-outline-primary {
+    background: linear-gradient(90deg, #1e90ff 0%, #38ef7d 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: box-shadow 0.2s;
+}
+.btn-primary:hover, .btn-outline-primary:hover {
+    box-shadow: 0 2px 8px #38ef7d33;
+    color: #fff;
+}
+.btn-outline-warning {
+    border-color: #ffc107;
+    color: #ffc107;
+    background: transparent;
+}
+.btn-outline-warning:hover {
+    background: #ffc107;
+    color: #fff;
+}
+.alert {
+    border-radius: 8px;
+}
+label {
+    margin-bottom: 0.2em;
+    font-weight: 500;
+}
+@media (max-width: 768px) {
+    .card-body.row.g-3 > .col-md-6, .card-body.row.g-3 > .col-md-4, .card-body.row.g-3 > .col-md-3, .card-body.row.g-3 > .col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+</style>
+<div class="container py-4">
+  <h2 class="mb-4">Settings</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <button type="button" class="btn btn-warning mb-3" onclick="sendTestSMS()">Test SMS</button>
+    {{ form.hidden_tag() }}
+    <div class="card mb-4">
+      <div class="card-header"><i class="fa fa-user"></i> User Profile</div>
+      <div class="card-body row g-3 align-items-center">
+        <div class="col-md-3 d-flex flex-column align-items-center justify-content-start mb-3">
+          <div class="mb-2 position-relative">
+            <img src="{{ url_for('static', filename=profile_picture) }}" alt="Profile Picture" class="rounded-circle border" style="width: 100px; height: 100px; object-fit: cover; background: #f7fafd;">
+            {% if profile_picture != 'profile_placeholder.svg' %}
+              <div class="position-absolute top-0 end-0 bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 25px; height: 25px; font-size: 12px;">
+                <i class="fa fa-check"></i>
+              </div>
+            {% endif %}
+          </div>
+          <input type="file" class="form-control" style="width: 100%;" accept="image/*" name="profile_picture">
+          <small class="text-muted mt-1">Upload profile picture</small>
+          {% if profile_picture != 'profile_placeholder.svg' %}
+            <small class="text-success mt-1"><i class="fa fa-check-circle"></i> Profile picture uploaded</small>
+          {% endif %}
+        </div>
+        <div class="col-md-6">{{ form.name.label }}{{ form.name(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.age.label }}{{ form.age(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.gender.label }}{{ form.gender(class="form-select") }}</div>
+        <div class="col-md-6">{{ form.email.label }}{{ form.email(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.height.label }}{{ form.height(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.weight.label }}{{ form.weight(class="form-control") }}</div>
+        <div class="col-md-3">{{ form.bmi_goal.label }}{{ form.bmi_goal(class="form-control") }}</div>
+        <div class="col-md-12">{{ form.medical_history.label }}{{ form.medical_history(class="form-control") }}</div>
+        <div class="col-md-4">{{ form.activity_level.label }}{{ form.activity_level(class="form-select") }}</div>
+        <div class="col-md-4">
+          <label for="phone_number" class="form-label">Phone Number</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa fa-phone"></i></span>
+            <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ form.phone_number.data or '' }}" placeholder="+91XXXXXXXXXX" required>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fa fa-robot"></i> AI Personalization</div>
+      <div class="card-body row g-3">
+        <div class="col-md-4">{{ form.diet_pref.label }}{{ form.diet_pref(class="form-select") }}</div>
+        <div class="col-md-4">{{ form.calorie_goal.label }}{{ form.calorie_goal(class="form-control") }}</div>
+        <div class="col-md-4">{{ form.allergies.label }}{{ form.allergies(class="form-control") }}</div>
+        <div class="col-md-6">{{ form.exercise_types.label }}{{ form.exercise_types(class="form-select", multiple=true) }}</div>
+        <div class="col-md-3">{{ form.workout_duration.label }}{{ form.workout_duration(class="form-select") }}</div>
+        <div class="col-md-3">{{ form.intensity.label }}{{ form.intensity(class="form-select") }}</div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fa fa-heartbeat"></i> Health Conditions</div>
+      <div class="card-body">
+        {{ form.conditions.label }}{{ form.conditions(class="form-select", multiple=true) }}
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fa fa-lock"></i> Privacy & Security</div>
+      <div class="card-body row g-3">
+        <div class="col-md-4">{{ form.current_password.label }}{{ form.current_password(class="form-control") }}</div>
+        <div class="col-md-4">{{ form.new_password.label }}{{ form.new_password(class="form-control") }}</div>
+        <div class="col-md-4">{{ form.confirm_password.label }}{{ form.confirm_password(class="form-control") }}</div>
+        <div class="col-12 d-flex flex-wrap gap-3 mt-2 mb-2">
+          <span>{{ form.download_data(class="btn btn-outline-primary d-flex align-items-center px-4 py-2") }} <i class="fa fa-download ms-2"></i></span>
+          <span>{{ form.clear_history(class="btn btn-outline-warning d-flex align-items-center px-4 py-2") }} <i class="fa fa-history ms-2"></i></span>
+          <span>{{ form.delete_account(class="form-check-input me-2") }} {{ form.delete_account.label }}</span>
+        </div>
+        <div class="col-12">
+          <a href="/view_backups" class="btn btn-outline-info d-flex align-items-center px-4 py-2">
+            <i class="fa fa-database me-2"></i> Manage Backups
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header"><i class="fa fa-life-ring"></i> Support & Feedback</div>
+      <div class="card-body row g-3">
+        <div class="col-md-6"><a href="mailto:support@yourapp.com" class="btn btn-link">Contact Support</a></div>
+        <div class="col-md-6"><a href="/faq" class="btn btn-link">FAQ</a></div>
+        <div class="col-md-12">{{ form.feedback.label }}{{ form.feedback(class="form-control") }}</div>
+      </div>
+    </div>
+    <div class="d-grid mt-4">
+      <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center gap-2" style="font-size:1.15rem;">
+        <i class="fa fa-save"></i> Save Settings
+      </button>
+      <a href="/backup_data" class="btn btn-outline-secondary btn-lg d-flex align-items-center justify-content-center gap-2 mt-2" style="font-size:1.15rem;">
+        <i class="fa fa-download"></i> Backup My Data
+      </a>
+      <form action="/restore_data" method="post" enctype="multipart/form-data" class="mt-2">
+        <label for="restore_file" class="form-label">Restore from Backup</label>
+        <input type="file" name="restore_file" id="restore_file" class="form-control mb-2" accept="application/json" required>
+        <button type="submit" class="btn btn-outline-success d-flex align-items-center justify-content-center gap-2">
+          <i class="fa fa-upload"></i> Restore My Data
+        </button>
+      </form>
+    </div>
+  </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('input[name="profile_picture"]');
+    const profileImg = document.querySelector('img[alt="Profile Picture"]');
+    
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profileImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+function sendTestSMS() {
+  fetch("{{ url_for('test_sms') }}", {method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest'}})
+    .then(res => res.json())
+    .then(data => alert(data.message || 'SMS sent!'));
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,343 @@
+{% extends "base.html" %}
+{% block title %}Writing Prompt{% endblock %}
+{% block content %}
+<div class="mh-dashboard-dark">
+    <div class="mh-feature-page prompt-center">
+        <a href="{{ url_for('mental_health') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="prompt-card">
+            <div class="prompt-header">
+                <span class="prompt-icon"><i class="fa fa-lightbulb-o"></i></span>
+                <h2 class="prompt-title">Creative Writing Prompt</h2>
+            </div>
+            <div class="prompt-stats">
+                <span>Session Time: <span id="prompt-timer">10:00</span></span>
+                <span>Word Count: <span id="word-count">0</span></span>
+            </div>
+            <div class="prompt-desc">
+                Get inspired by a random prompt and start writing! Click 'New Prompt' for a fresh idea.
+            </div>
+            <div class="prompt-puzzle">
+                <span id="prompt-text" class="prompt-text">LOADING...</span>
+            </div>
+            <textarea id="user-writing" class="prompt-textarea" rows="7" placeholder="Start writing here..."></textarea>
+            <div class="prompt-btn-row">
+                <button type="button" class="prompt-btn" onclick="saveWriting()"><i class="fa fa-save"></i> Save</button>
+                <button type="button" class="prompt-btn new-btn" onclick="nextPrompt()"><i class="fa fa-refresh"></i> New Prompt</button>
+            </div>
+            <div id="prompt-result" class="prompt-result"></div>
+            <div class="prompt-history">
+                <h4>Prompt History</h4>
+                <ul id="prompt-history-list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.mh-dashboard-dark {
+    background: #181c24;
+    color: #eaf0fa;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.mh-feature-page.prompt-center {
+    max-width: 520px;
+    margin: 60px auto 60px auto;
+    background: #23283a;
+    border-radius: 22px;
+    box-shadow: 0 8px 36px rgba(30,40,60,0.22);
+    padding: 44px 36px 36px 36px;
+    color: #eaf0fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.back-btn {
+    color: #4f8cff;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: inline-block;
+    font-size: 1.08rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+}
+.back-btn:hover {
+    color: #7ed957;
+    text-decoration: underline;
+}
+.prompt-card {
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    padding: 32px 24px 28px 24px;
+    color: #eaf0fa;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.prompt-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.prompt-icon {
+    font-size: 2.3rem;
+    color: #7ed957;
+    margin-bottom: 8px;
+}
+.prompt-title {
+    color: #4f8cff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0;
+}
+.prompt-stats {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 1.08rem;
+    color: #7ed957;
+    font-weight: 700;
+}
+.prompt-desc {
+    color: #eaf0fa;
+    font-size: 1.08rem;
+    margin-bottom: 18px;
+    margin-top: 6px;
+}
+.prompt-puzzle {
+    margin-bottom: 18px;
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #7ed957;
+    letter-spacing: 0.04em;
+    background: #181c24;
+    border-radius: 10px;
+    padding: 12px 24px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    min-width: 180px;
+}
+.prompt-textarea {
+    width: 100%;
+    min-height: 120px;
+    background: #181c24;
+    color: #eaf0fa;
+    border: 2px solid #4f8cff;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 1.08rem;
+    padding: 10px 12px;
+    resize: vertical;
+    transition: border 0.2s;
+}
+.prompt-textarea:focus {
+    border: 2px solid #7ed957;
+    outline: none;
+    color: #7ed957;
+}
+.prompt-btn-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 8px;
+    width: 100%;
+}
+.prompt-btn {
+    background: linear-gradient(90deg, #4f8cff 0%, #38b6ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    padding: 10px 28px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+}
+.prompt-btn.new-btn {
+    background: linear-gradient(90deg, #ffb84f 0%, #ff4f81 100%);
+    color: #fff;
+}
+.prompt-btn.new-btn:hover {
+    background: linear-gradient(90deg, #ff4f81 0%, #ffb84f 100%);
+}
+.prompt-btn:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #4f8cff 100%);
+}
+.prompt-result {
+    min-height: 1.5em;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #7ed957;
+    margin-bottom: 8px;
+    transition: color 0.3s, transform 0.3s;
+}
+.prompt-result.animated {
+    animation: pop 0.5s;
+}
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+.prompt-history {
+    margin-top: 18px;
+    width: 100%;
+    background: #181c24;
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+}
+.prompt-history h4 {
+    color: #4f8cff;
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+#prompt-history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #eaf0fa;
+    font-size: 0.98rem;
+}
+#prompt-history-list li {
+    margin-bottom: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#prompt-history-list li.saved {
+    color: #7ed957;
+}
+#prompt-history-list li.unsaved {
+    color: #ff4f81;
+}
+@media (max-width: 600px) {
+    .mh-feature-page.prompt-center {
+        max-width: 98vw;
+        padding: 18px 2vw 18px 2vw;
+    }
+    .prompt-card {
+        padding: 18px 2vw 18px 2vw;
+    }
+    .prompt-puzzle {
+        font-size: 1rem;
+        min-width: 100px;
+        padding: 8px 8px;
+    }
+}
+</style>
+<script>
+const prompts = [
+    'Write about a time you overcame a challenge.',
+    'Describe your favorite place in vivid detail.',
+    'Imagine you wake up with a superpower. What happens next?',
+    'Write a letter to your future self.',
+    'Describe a moment of unexpected kindness.',
+    'Invent a new holiday and explain how it is celebrated.',
+    'Write a story that begins with: "The rain wouldn't stop..."',
+    'Describe a character who is hiding a secret.',
+    'Write about a journey to an unknown place.',
+    'What does happiness mean to you?',
+    'Write a poem about the night sky.',
+    'Describe a world where everyone can read minds.',
+    'Write about a memory that makes you smile.',
+    'Describe your perfect day from start to finish.',
+    'Write a story that ends with a surprise twist.',
+    'Describe a dream you've had and what it might mean.',
+    'Write about a time you helped someone.',
+    'Describe a place you'd love to visit and why.',
+    'Write a story using these three words: river, key, shadow.',
+    'Describe a moment when you felt truly alive.'
+];
+let currentPrompt = '';
+let writingHistory = [];
+let timer = 600; // 10 minutes
+let timerInterval = null;
+
+function nextPrompt() {
+    if (timerInterval) clearInterval(timerInterval);
+    timer = 600;
+    updateTimer();
+    const idx = Math.floor(Math.random() * prompts.length);
+    currentPrompt = prompts[idx];
+    document.getElementById('prompt-text').textContent = currentPrompt;
+    document.getElementById('user-writing').value = '';
+    document.getElementById('prompt-result').textContent = '';
+    document.getElementById('prompt-result').classList.remove('animated');
+    startTimer();
+    updateWordCount();
+}
+
+function saveWriting() {
+    const writing = document.getElementById('user-writing').value.trim();
+    const result = document.getElementById('prompt-result');
+    result.classList.remove('animated');
+    void result.offsetWidth;
+    if (writing.length > 0) {
+        writingHistory.push({prompt: currentPrompt, writing: writing, status: 'saved'});
+        result.textContent = 'Saved!';
+        result.style.color = '#7ed957';
+        result.classList.add('animated');
+        updatePromptHistory();
+    } else {
+        result.textContent = 'Write something before saving!';
+        result.style.color = '#ff4f81';
+        result.classList.add('animated');
+    }
+}
+
+function updatePromptHistory() {
+    const list = document.getElementById('prompt-history-list');
+    list.innerHTML = '';
+    writingHistory.slice(-8).reverse().forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.prompt.slice(0, 32)}${item.prompt.length > 32 ? '...' : ''}`;
+        li.className = item.status === 'saved' ? 'saved' : 'unsaved';
+        list.appendChild(li);
+    });
+}
+
+function updateWordCount() {
+    const writing = document.getElementById('user-writing').value.trim();
+    const count = writing.length > 0 ? writing.split(/\s+/).length : 0;
+    document.getElementById('word-count').textContent = count;
+}
+
+function updateTimer() {
+    const min = Math.floor(timer / 60);
+    const sec = timer % 60;
+    document.getElementById('prompt-timer').textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+}
+
+function startTimer() {
+    updateTimer();
+    timerInterval = setInterval(() => {
+        timer--;
+        updateTimer();
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            document.getElementById('prompt-result').textContent = 'Time is up! Save your writing.';
+            document.getElementById('prompt-result').style.color = '#ffb84f';
+        }
+    }, 1000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('user-writing').addEventListener('input', updateWordCount);
+    writingHistory = [];
+    updatePromptHistory();
+    nextPrompt();
+});
+</script>
+{% endblock %} 

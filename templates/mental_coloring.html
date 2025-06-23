@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block title %}Digital Coloring{% endblock %}
+{% block content %}
+<div class="mh-dashboard-dark">
+    <div class="mh-feature-page coloring-center">
+        <a href="{{ url_for('mental_health') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="coloring-card">
+            <div class="coloring-header">
+                <span class="coloring-icon"><i class="fa fa-paint-brush"></i></span>
+                <h2 class="coloring-title">Digital Coloring for Relaxation</h2>
+            </div>
+            <div class="coloring-desc">
+                Coloring is a creative and mindful activity that helps reduce stress, improve focus, and promote relaxation. Take a break and enjoy coloring below!
+            </div>
+            <div class="coloring-palette" id="color-palette">
+                <span class="swatch" style="background:#4f8cff;" data-color="#4f8cff"></span>
+                <span class="swatch" style="background:#7ed957;" data-color="#7ed957"></span>
+                <span class="swatch" style="background:#ffb84f;" data-color="#ffb84f"></span>
+                <span class="swatch" style="background:#ff4f81;" data-color="#ff4f81"></span>
+                <span class="swatch" style="background:#38b6ff;" data-color="#38b6ff"></span>
+                <span class="swatch" style="background:#b07cff;" data-color="#b07cff"></span>
+                <span class="swatch" style="background:#fff; border:2px solid #b0b0b0;" data-color="#fff"></span>
+                <span class="swatch" style="background:#23283a; border:2px solid #b0b0b0;" data-color="#23283a"></span>
+            </div>
+            <div class="coloring-canvas-container">
+                <canvas id="coloring-canvas" width="320" height="220"></canvas>
+                <button type="button" class="coloring-clear-btn" onclick="clearColoringCanvas()"><i class="fa fa-eraser"></i> Clear</button>
+            </div>
+            <a href="https://www.justcolor.net/online-coloring/" target="_blank" class="coloring-btn coloring-link-btn"><i class="fa fa-paint-brush"></i> Start Online Coloring</a>
+            <div class="coloring-links">
+                <a href="https://www.healthline.com/health/mental-health/benefits-of-coloring" target="_blank" class="coloring-resource-link">Benefits of coloring for mental health</a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.mh-dashboard-dark {
+    background: #181c24;
+    color: #eaf0fa;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.mh-feature-page.coloring-center {
+    max-width: 500px;
+    margin: 60px auto 60px auto;
+    background: #23283a;
+    border-radius: 22px;
+    box-shadow: 0 8px 36px rgba(30,40,60,0.22);
+    padding: 44px 36px 36px 36px;
+    color: #eaf0fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.back-btn {
+    color: #4f8cff;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: inline-block;
+    font-size: 1.08rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+}
+.back-btn:hover {
+    color: #7ed957;
+    text-decoration: underline;
+}
+.coloring-card {
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    padding: 32px 24px 28px 24px;
+    color: #eaf0fa;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.coloring-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.coloring-icon {
+    font-size: 2.3rem;
+    color: #ffb84f;
+    margin-bottom: 8px;
+}
+.coloring-title {
+    color: #4f8cff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0;
+}
+.coloring-desc {
+    color: #eaf0fa;
+    font-size: 1.08rem;
+    margin-bottom: 24px;
+    margin-top: 6px;
+}
+.coloring-palette {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    margin-top: 2px;
+    justify-content: center;
+}
+.swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #23283a;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    display: inline-block;
+    cursor: pointer;
+    transition: border 0.2s;
+}
+.swatch.selected, .swatch:active {
+    border: 2.5px solid #4f8cff;
+}
+.coloring-canvas-container {
+    margin-bottom: 18px;
+    margin-top: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+#coloring-canvas {
+    background: #fff;
+    border: 2.5px solid #4f8cff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    cursor: crosshair;
+    margin-bottom: 8px;
+}
+.coloring-clear-btn {
+    background: #ff4f81;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.01rem;
+    font-weight: 600;
+    padding: 7px 18px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.10);
+}
+.coloring-clear-btn:hover {
+    background: #b07cff;
+}
+.coloring-btn.coloring-link-btn {
+    background: linear-gradient(90deg, #4f8cff 0%, #b07cff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    padding: 10px 28px;
+    margin: 18px 0 8px 0;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    letter-spacing: 0.5px;
+}
+.coloring-btn.coloring-link-btn:hover {
+    background: linear-gradient(90deg, #b07cff 0%, #4f8cff 100%);
+}
+.coloring-links {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.coloring-links a.coloring-resource-link {
+    color: #4f8cff;
+    text-decoration: underline;
+    font-size: 1.01rem;
+    font-weight: 600;
+    transition: color 0.2s;
+    margin-top: 4px;
+}
+.coloring-links a.coloring-resource-link:hover {
+    color: #7ed957;
+}
+</style>
+<script>
+// Simple coloring canvas with palette
+const canvas = document.getElementById('coloring-canvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+let currentColor = '#4f8cff';
+let lastX = 0, lastY = 0;
+
+function setColor(color) {
+    currentColor = color;
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+    const selected = document.querySelector('.swatch[data-color="' + color + '"]');
+    if (selected) selected.classList.add('selected');
+}
+
+canvas.addEventListener('mousedown', e => {
+    drawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+canvas.addEventListener('mousemove', e => {
+    if (!drawing) return;
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+canvas.addEventListener('mouseup', () => { drawing = false; });
+canvas.addEventListener('mouseleave', () => { drawing = false; });
+
+function clearColoringCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+document.querySelectorAll('.swatch').forEach(swatch => {
+    swatch.addEventListener('click', function() {
+        setColor(this.getAttribute('data-color'));
+    });
+});
+// Set default color
+setColor('#4f8cff');
+</script>
+{% endblock %} 

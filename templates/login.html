@@ -1,0 +1,121 @@
+<!-- START OF FILE login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="sidebar">
+    <div class="sidebar-header">
+        <span class="close-btn"><i class="fa fa-times"></i></span>
+        <h3><i class="fa fa-plus-circle"></i> Healthcare AI</h3>
+    </div>
+    <div class="sidebar-content">
+        {% if session.get('is_admin') %}
+        <a href="{{ url_for('admin_dashboard') }}" class="sidebar-item">
+            <i class="fa fa-shield"></i>
+            <span>Admin Panel</span>
+        </a>
+        {% endif %}
+        <a href="{{ url_for('symptom_checker') }}" class="sidebar-item">
+            <i class="fa fa-stethoscope"></i>
+            <span>Symptom Checker</span>
+        </a>
+        <a href="{{ url_for('chat_assistant') }}" class="sidebar-item">
+            <i class="fa fa-comments"></i>
+            <span>AI Health Chat</span>
+        </a>
+        <a href="{{ url_for('bmi_calculator') }}" class="sidebar-item">
+            <i class="fa fa-calculator"></i>
+            <span>BMI Calculator</span>
+        </a>
+        <a href="{{ url_for('appointments') }}" class="sidebar-item">
+            <i class="fa fa-calendar"></i>
+            <span>Appointments</span>
+        </a>
+        <a href="{{ url_for('pill_reminder') }}" class="sidebar-item">
+            <i class="fa fa-bell"></i>
+            <span>Pill Reminder</span>
+        </a>
+        <a href="{{ url_for('blood_donation') }}" class="sidebar-item">
+            <i class="fa fa-tint"></i>
+            <span>Blood Donation</span>
+        </a>
+        <a href="{{ url_for('mental_health') }}" class="sidebar-item">
+            <i class="fa fa-heart"></i>
+            <span>Mental Health</span>
+        </a>
+        <a href="{{ url_for('insurance') }}" class="sidebar-item">
+            <i class="fa fa-shield"></i>
+            <span>Insurance</span>
+        </a>
+        <a href="{{ url_for('settings_page') }}" class="sidebar-item">
+            <i class="fa fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </div>
+</div>
+
+<div class="menu-overlay"></div>
+
+<div class="login-page">
+    <div class="welcome-section">
+        <div class="hamburger-menu">
+            <i class="fa fa-bars"></i>
+        </div>
+        <div class="welcome-content">
+            <span class="welcome-icon"><i class="fa fa-user-md"></i></span>
+            <h1>Healthcare AI</h1>
+            <p>Your Personal Health Assistant</p>
+            <p class="welcome-subtitle">Access advanced healthcare services and manage your well-being with AI-powered support.</p>
+        </div>
+    </div>
+    <div class="login-container enhanced-login">
+        <div class="login-accent-bar"></div>
+        <form method="POST" action="{{ url_for('login') }}" class="login-form">
+            <h2>Login</h2>
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <button type="submit">Login</button>
+            <p class="login-signup-link">Don't have an account? <a href="{{ url_for('register') }}">Sign up</a></p>
+        </form>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-message">
+            {% for message in messages %}
+              {% if 'invalid' in message|lower or 'blocked' in message|lower or 'error' in message|lower or 'exists' in message|lower %}
+                <div>{{ message }}</div>
+              {% endif %}
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger-menu');
+    const sidebar = document.querySelector('.sidebar');
+    const closeBtn = document.querySelector('.close-btn');
+    const overlay = document.querySelector('.menu-overlay');
+
+    hamburger.addEventListener('click', function() {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+    });
+
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+});
+</script>
+</body>
+</html>

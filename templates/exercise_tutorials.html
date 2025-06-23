@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Exercise Tutorials{% endblock %}
+{% block content %}
+<div class="mh-dashboard-dark">
+    <div class="exercise-tutorials-center">
+        <a href="{{ url_for('home') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back to Home</a>
+        <div class="exercise-header">
+            <img src="https://i.pinimg.com/736x/cd/42/41/cd424157304f11c81d051d2de3246226.jpg" alt="Exercise Tutorials" class="exercise-header-img">
+            <h2 class="exercise-title"><i class="fa fa-dumbbell"></i> Exercise Tutorials</h2>
+            <div class="exercise-desc">Explore a curated selection of online exercise tutorials to help you stay active and healthy. Whether you're a beginner or looking to try something new, these videos will guide you through safe and effective workouts.</div>
+        </div>
+        <div class="exercise-videos">
+            <div class="exercise-video-card">
+                <iframe width="340" height="200" src="https://www.youtube.com/embed/UBMk30rjy0o" title="Full Body Beginner Workout" frameborder="0" allowfullscreen></iframe>
+                <div class="video-title">Full Body Beginner Workout</div>
+            </div>
+            <div class="exercise-video-card">
+                <iframe width="340" height="200" src="https://www.youtube.com/embed/ml6cT4AZdqI" title="20-Minute Home HIIT Workout" frameborder="0" allowfullscreen></iframe>
+                <div class="video-title">20-Minute Home HIIT Workout</div>
+            </div>
+            <div class="exercise-video-card">
+                <iframe width="340" height="200" src="https://www.youtube.com/embed/VHyGqsPOUHs" title="Stretching Routine for Flexibility" frameborder="0" allowfullscreen></iframe>
+                <div class="video-title">Stretching Routine for Flexibility</div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.mh-dashboard-dark {
+    background: #181c24;
+    color: #eaf0fa;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.exercise-tutorials-center {
+    max-width: 700px;
+    margin: 60px auto 60px auto;
+    background: #23283a;
+    border-radius: 22px;
+    box-shadow: 0 8px 36px rgba(30,40,60,0.22);
+    padding: 44px 36px 36px 36px;
+    color: #eaf0fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.exercise-header-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 18px;
+    object-fit: cover;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 12px rgba(44,62,80,0.18);
+}
+.exercise-title {
+    color: #4f8cff;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.exercise-desc {
+    color: #b0c7e6;
+    font-size: 1.13rem;
+    margin-bottom: 18px;
+    font-weight: 500;
+}
+.exercise-videos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 18px;
+    justify-content: center;
+    margin-top: 10px;
+}
+.exercise-video-card {
+    background: #181c24;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+    padding: 16px 12px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 360px;
+    margin-bottom: 10px;
+}
+.exercise-video-card iframe {
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+.video-title {
+    color: #7ed957;
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-top: 2px;
+}
+.back-btn {
+    color: #4f8cff;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: inline-block;
+    font-size: 1.08rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+}
+.back-btn:hover {
+    color: #7ed957;
+    text-decoration: underline;
+}
+</style>
+{% endblock %} 

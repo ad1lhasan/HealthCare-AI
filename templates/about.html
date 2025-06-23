@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - Healthcare AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #4f8cff 0%, #38b6ff 100%);
+            color: #fff;
+            border-radius: 24px 24px 0 0;
+            padding: 2.5em 2em 1.5em 2em;
+            text-align: center;
+            margin-bottom: 2em;
+            box-shadow: 0 4px 24px rgba(79, 140, 255, 0.08);
+        }
+        .about-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5em;
+        }
+        .about-hero p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .about-content {
+            background: #f8fbff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+            padding: 2em 2em 1.5em 2em;
+            color: #2d3e50;
+        }
+        .about-content h2 {
+            color: #4f8cff;
+            font-size: 1.3rem;
+            margin-top: 1.5em;
+        }
+        .about-values {
+            display: flex;
+            gap: 2em;
+            margin-top: 2em;
+            flex-wrap: wrap;
+        }
+        .about-value {
+            background: #e3f0ff;
+            border-radius: 12px;
+            padding: 1.2em 1em;
+            flex: 1 1 200px;
+            min-width: 180px;
+            text-align: center;
+            margin-bottom: 1em;
+        }
+        .about-value h4 {
+            color: #4f8cff;
+            margin-bottom: 0.5em;
+        }
+        @media (max-width: 700px) {
+            .about-content, .about-hero {
+                padding: 1em 0.5em;
+            }
+            .about-values {
+                flex-direction: column;
+                gap: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-curved-container">
+    <main class="main-content">
+        <div class="about-hero">
+            <h1><i class="fa fa-info-circle"></i> About Us</h1>
+            <p>Learn more about Healthcare AI, our mission, vision, and the team dedicated to empowering your health journey.</p>
+        </div>
+        <div class="about-content">
+            <h2>Our Mission</h2>
+            <p>To make healthcare accessible, personalized, and proactive for everyone through the power of artificial intelligence and modern technology.</p>
+            <h2>Our Vision</h2>
+            <p>To be the leading digital health platform, supporting millions in making informed health decisions and living healthier lives.</p>
+            <h2>Our Team</h2>
+            <p>Healthcare AI is built by a passionate team of healthcare professionals, AI engineers, and designers committed to improving health outcomes for all.</p>
+            <div class="about-values">
+                <div class="about-value">
+                    <h4><i class="fa fa-heart"></i> Compassion</h4>
+                    <p>We care deeply about the well-being of our users and strive to provide empathetic support.</p>
+                </div>
+                <div class="about-value">
+                    <h4><i class="fa fa-lightbulb-o"></i> Innovation</h4>
+                    <p>We embrace new ideas and technologies to deliver the best possible healthcare solutions.</p>
+                </div>
+                <div class="about-value">
+                    <h4><i class="fa fa-users"></i> Collaboration</h4>
+                    <p>We work together across disciplines to create a holistic and effective platform.</p>
+                </div>
+                <div class="about-value">
+                    <h4><i class="fa fa-shield"></i> Integrity</h4>
+                    <p>We are committed to transparency, privacy, and ethical practices in all we do.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html> 

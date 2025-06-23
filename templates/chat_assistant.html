@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}AI Health Chat Assistant{% endblock %}
+{% block content %}
+<div class="chat-page-container">
+    <!-- Chat History Panel -->
+    <div class="chat-history-panel">
+        <div class="history-header">
+            <h3><i class="fa fa-history"></i> Chat History</h3>
+            <form action="{{ url_for('clear_chat_history') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear all chat history?');">
+                <button type="submit" class="clear-history-btn" title="Clear All History">
+                    <i class="fa fa-trash"></i> Clear All
+                </button>
+    </form>
+        </div>
+        <div class="history-list">
+    {% if chat_history %}
+                {% for chat in chat_history %}
+                <div class="history-item" onclick="loadConversation({{ chat.id }})">
+                    <div class="history-item-message">{{ chat.message|truncate(40) }}</div>
+                    <div class="history-item-date">{{ chat.timestamp.strftime('%b %d, %I:%M %p') }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-history">No past conversations found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Chat Interface -->
+    <div class="chat-interface">
+        <div class="chat-header">
+            <h2>AI Health Assistant</h2>
+            <p>Your intelligent partner for health-related questions.</p>
+        </div>
+        <div class="chat-window" id="chat-window">
+            <!-- Initial message from AI -->
+            <div class="chat-bubble ai">
+                <div class="chat-bubble-content">
+                    Hello! How can I help you today? Feel free to ask any health-related questions.
+                </div>
+            </div>
+            <!-- Chat messages will be appended here -->
+        </div>
+        <div class="chat-input-area">
+            <form id="chat-form" method="POST">
+                <input type="text" id="message-input" name="message" placeholder="Ask a health question..." autocomplete="off">
+                <button type="submit" id="send-button">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to load a full conversation from history
+function loadConversation(latestChatId) {
+    fetch(`/get_conversation/${latestChatId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const chatWindow = document.getElementById('chat-window');
+                chatWindow.innerHTML = ''; // Clear the chat window first
+
+                // Loop through the conversation and rebuild the chat
+                data.conversation.forEach(chatPair => {
+                    // Add user message
+                    chatWindow.innerHTML += `
+                        <div class="chat-bubble user">
+                            <div class="chat-bubble-content">${chatPair.message}</div>
+                        </div>
+                    `;
+                    // Add AI response
+                    chatWindow.innerHTML += `
+                        <div class="chat-bubble ai">
+                            <div class="chat-bubble-content">${chatPair.response}</div>
+                        </div>
+                    `;
+                });
+                
+                chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to the bottom
+    } else {
+                console.error('Failed to load conversation:', data.message);
+            }
+        });
+}
+
+// Handle chat form submission with AJAX
+document.getElementById('chat-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+
+    if (message) {
+        const chatWindow = document.getElementById('chat-window');
+
+        // Display user message immediately
+        chatWindow.innerHTML += `
+            <div class="chat-bubble user">
+                <div class="chat-bubble-content">${message}</div>
+            </div>
+        `;
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        messageInput.value = '';
+
+        // Show typing indicator
+        chatWindow.innerHTML += `
+            <div class="chat-bubble ai typing-indicator" id="typing-indicator">
+                <div class="chat-bubble-content">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </div>
+        `;
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        // Send message to server
+        fetch("{{ url_for('chat_assistant') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `message=${encodeURIComponent(message)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove typing indicator
+            document.getElementById('typing-indicator').remove();
+            
+            // Display AI response
+            chatWindow.innerHTML += `
+                <div class="chat-bubble ai">
+                    <div class="chat-bubble-content">${data.response}</div>
+                </div>
+            `;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            // Optionally, refresh history panel
+            // For simplicity, we can ask user to refresh or do it automatically
+        });
+    }
+});
+</script>
+{% endblock %} 

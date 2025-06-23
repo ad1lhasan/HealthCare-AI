@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+{% block title %}Mental Health Management Journal{% endblock %}
+{% block content %}
+<div class="mh-dashboard-dark">
+    <div class="mh-feature-page center-content better-position">
+        <a href="{{ url_for('mental_health') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="mh-journal-card-pro">
+            <div class="mh-journal-header-pro">
+                <span class="mh-journal-icon-pro"><i class="fa fa-heartbeat"></i></span>
+                <h2 class="mh-heading">Mental Health Management Journal</h2>
+                <div class="mh-journal-desc-pro">Track your thoughts, feelings, and progress. Journaling is a powerful tool for self-reflection and mental well-being.</div>
+            </div>
+            <div class="mh-journal-form-container">
+                <form method="POST" class="mh-journal-form">
+                    <input type="text" name="message" placeholder="How are you feeling today?" required>
+                    <button type="submit" class="save-btn"><i class="fa fa-save"></i> Save Entry</button>
+                </form>
+                {% if response %}
+                    <div class="mh-journal-response">{{ response|safe }}</div>
+                {% endif %}
+                <div class="mh-emoji-feedback-section">
+                    <div class="mh-emoji-label">How helpful was this feedback?</div>
+                    <div class="mh-emoji-row">
+                        <span class="mh-emoji-btn" data-emoji="😞" title="Not helpful">😞</span>
+                        <span class="mh-emoji-btn" data-emoji="😐" title="Neutral">😐</span>
+                        <span class="mh-emoji-btn" data-emoji="😊" title="Helpful">😊</span>
+                        <span class="mh-emoji-btn" data-emoji="😍" title="Very helpful">😍</span>
+                    </div>
+                    <div class="mh-emoji-thankyou" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="mh-history-section">
+            <h3 class="mh-heading"><i class="fa fa-history"></i> Journal History</h3>
+            <div class="mh-history-list">
+                {% if journal_history and journal_history|length > 0 %}
+                    {% for entry in journal_history %}
+                        <div class="mh-history-entry">
+                            <div class="mh-history-date"><i class="fa fa-calendar"></i> {{ entry.timestamp.strftime('%b %d, %Y %I:%M %p') }}</div>
+                            <div class="mh-history-text">{{ entry.message }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="mh-history-empty">No journal entries yet. Start by writing your first reflection above!</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.mh-dashboard-dark {
+    background: #181c24;
+    color: #142a4d;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.mh-feature-page {
+    max-width: 650px;
+    margin: 60px auto 60px auto;
+    background: #23283a;
+    border-radius: 24px;
+    box-shadow: 0 8px 36px rgba(30,40,60,0.22);
+    padding: 48px 40px 40px 40px;
+    color: #eaf0fa;
+    min-height: 500px;
+}
+.better-position {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.back-btn {
+    color: #4f8cff;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: inline-block;
+    font-size: 1.08rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+}
+.back-btn:hover {
+    color: #7ed957;
+    text-decoration: underline;
+}
+.mh-journal-card-pro {
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    padding: 36px 28px 28px 28px;
+    color: #eaf0fa;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    border: 1.5px solid #4f8cff;
+    position: relative;
+}
+.mh-journal-header-pro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.mh-journal-icon-pro {
+    font-size: 2.2rem;
+    color: #7ed957;
+    margin-bottom: 8px;
+}
+.mh-journal-desc-pro {
+    color: #b0c7e6;
+    font-size: 1.08rem;
+    margin-top: 6px;
+    margin-bottom: 0;
+    font-weight: 500;
+    text-align: center;
+}
+.mh-heading {
+    color: #4f8cff !important;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto 8px auto;
+    font-weight: 800;
+}
+.mh-journal-form-container {
+    margin-bottom: 0;
+    width: 100%;
+}
+.mh-journal-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+.mh-journal-form input[type="text"] {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #4f8cff;
+    background: #23283a;
+    color: #4f8cff;
+    font-size: 1.08rem;
+    text-align: center;
+}
+.mh-journal-form input[type="text"]:focus {
+    border: 1.5px solid #7ed957;
+    background: #181c24;
+    outline: none;
+    color: #7ed957;
+}
+.save-btn {
+    background: linear-gradient(90deg, #4f8cff 0%, #38b6ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    padding: 10px 28px;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    letter-spacing: 0.5px;
+}
+.save-btn:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #4f8cff 100%);
+}
+.mh-journal-response {
+    background: #23283a;
+    color: #4f8cff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    font-size: 1.05rem;
+}
+.mh-history-section {
+    margin-top: 24px;
+    width: 100%;
+}
+.mh-history-list {
+    margin-top: 10px;
+    width: 100%;
+}
+.mh-history-entry {
+    background: #181c24;
+    border-left: 4px solid #4f8cff;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    padding: 14px 18px 10px 18px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+    text-align: left;
+}
+.mh-history-date {
+    color: #38b6ff;
+    font-size: 1.01rem;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+.mh-history-text {
+    color: #4f8cff;
+    font-size: 1.08rem;
+}
+.mh-history-empty {
+    color: #4f8cff;
+    text-align: center;
+    font-size: 1.05rem;
+    margin-top: 12px;
+}
+.mh-emoji-feedback-section {
+    margin-top: 16px;
+    text-align: center;
+}
+.mh-emoji-label {
+    color: #b0c7e6;
+    font-size: 1.01rem;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.mh-emoji-row {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 6px;
+}
+.mh-emoji-btn {
+    font-size: 2rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    border-radius: 50%;
+    padding: 4px 8px;
+    user-select: none;
+    border: 2px solid transparent;
+}
+.mh-emoji-btn.selected, .mh-emoji-btn:hover {
+    background: #23283a;
+    border: 2px solid #7ed957;
+    box-shadow: 0 2px 8px rgba(126, 217, 87, 0.13);
+    transform: scale(1.18);
+}
+.mh-emoji-thankyou {
+    color: #7ed957;
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin-top: 4px;
+    min-height: 1.2em;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const emojiBtns = document.querySelectorAll('.mh-emoji-btn');
+    const thankyou = document.querySelector('.mh-emoji-thankyou');
+    let selected = false;
+    emojiBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (selected) return;
+            emojiBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            thankyou.style.display = 'block';
+            thankyou.textContent = 'Thank you for your feedback!';
+            selected = true;
+        });
+    });
+});
+</script>
+{% endblock %} 

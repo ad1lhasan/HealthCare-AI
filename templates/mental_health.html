@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% block title %}Mental Health & Wellness Dashboard{% endblock %}
+{% block content %}
+<div class="mh-dashboard-dark">
+    <div class="mh-welcome-container">
+        <div class="mh-welcome">
+            <h2 class="mh-heading"><i class="fa fa-heartbeat"></i> Welcome to Your Mental Wellness Hub</h2>
+            <div class="mh-welcome-text">
+                Your mind matters. This personalized dashboard is designed to help you nurture your mental well-being every day. Explore tools for self-reflection, mindfulness, relaxation, and support—all in one place. Take a step toward a healthier, happier you.
+            </div>
+        </div>
+    </div>
+    <div class="mh-section">
+        <div class="mh-card-row">
+            <div class="mh-journal-section-heading"><i class="fa fa-heartbeat"></i> Mental Health Management</div>
+            <a href="{{ url_for('mental_journal_page') }}" class="mh-card mh-mind-card pro-mind-card">
+                <div class="mind-icon"><i class="fa fa-book"></i></div>
+                <div class="mind-title">Reflective Journal</div>
+                <div class="mind-desc">Document your thoughts, feelings, and daily experiences to foster self-awareness and growth.</div>
+            </a>
+        </div>
+    </div>
+    <div class="mh-section">
+        <h3 class="mh-section-title mh-heading"><i class="fa fa-leaf"></i> Mindfulness & Stress Relief</h3>
+        <div class="mh-card-row mh-mindfulness-row">
+            <a href="{{ url_for('mental_breathing') }}" class="mh-card mh-mind-card pro-mind-card">
+                <div class="mind-icon"><i class="fa fa-cloud"></i></div>
+                <div class="mind-title">Guided Breathing</div>
+                <div class="mind-desc">Practice calming breathing exercises to reduce anxiety and restore balance.</div>
+            </a>
+            <a href="{{ url_for('mental_coloring') }}" class="mh-card mh-mind-card pro-mind-card">
+                <div class="mind-icon"><i class="fa fa-paint-brush"></i></div>
+                <div class="mind-title">Digital Coloring</div>
+                <div class="mind-desc">Relax and express creativity with soothing online coloring activities.</div>
+            </a>
+            <a href="{{ url_for('mental_music') }}" class="mh-card mh-mind-card pro-mind-card">
+                <div class="mind-icon"><i class="fa fa-music"></i></div>
+                <div class="mind-title">Relaxing Music</div>
+                <div class="mind-desc">Listen to peaceful music to unwind, focus, or lift your mood.</div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=inpok4MKVLM" target="_blank" class="mh-card mh-mind-card pro-mind-card">
+                <div class="mind-icon"><i class="fa fa-clock-o"></i></div>
+                <div class="mind-title">5-Minute Meditation</div>
+                <div class="mind-desc">Take a quick guided meditation break to reset your mind and body.</div>
+            </a>
+            <a href="https://www.gratefulness.org/gratitude-journal/" target="_blank" class="mh-card mh-mind-card pro-mind-card">
+                <div class="mind-icon"><i class="fa fa-heart"></i></div>
+                <div class="mind-title">Gratitude Practice</div>
+                <div class="mind-desc">Reflect on things you're grateful for to boost positivity and resilience.</div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=OdIJ2x3nxzQ" target="_blank" class="mh-card mh-mind-card pro-mind-card">
+                <div class="mind-icon"><i class="fa fa-tree"></i></div>
+                <div class="mind-title">Nature Sounds</div>
+                <div class="mind-desc">Listen to calming nature sounds for instant relaxation and stress relief.</div>
+            </a>
+        </div>
+    </div>
+    <div class="mh-section">
+        <h3 class="mh-section-title mh-heading"><i class="fa fa-gamepad"></i> Mind Games & Creativity</h3>
+        <div class="mh-card-row mh-creativity-row">
+            <a href="{{ url_for('mental_memory') }}" class="mh-card pro-mind-card creativity-card">
+                <div class="creativity-icon"><i class="fa fa-pagelines"></i></div>
+                <div class="creativity-title">Memory Challenge</div>
+                <div class="creativity-desc">Boost your cognitive skills with a fun and interactive memory game.</div>
+            </a>
+            <a href="{{ url_for('mental_drawing') }}" class="mh-card pro-mind-card creativity-card">
+                <div class="creativity-icon"><i class="fa fa-pencil"></i></div>
+                <div class="creativity-title">Creative Drawing</div>
+                <div class="creativity-desc">Express your emotions and ideas with a simple digital drawing pad.</div>
+            </a>
+            <a href="{{ url_for('mental_word_puzzle') }}" class="mh-card pro-mind-card creativity-card">
+                <div class="creativity-icon"><i class="fa fa-random"></i></div>
+                <div class="creativity-title">Word Puzzle</div>
+                <div class="creativity-desc">Sharpen your mind with a quick word scramble or puzzle challenge.</div>
+            </a>
+            <a href="https://sketch.io/sketchpad/" target="_blank" class="mh-card pro-mind-card creativity-card">
+                <div class="creativity-icon"><i class="fa fa-paint-brush"></i></div>
+                <div class="creativity-title">Doodle Pad</div>
+                <div class="creativity-desc">Let your creativity flow with a freeform online doodle pad.</div>
+            </a>
+            <a href="{{ url_for('mental_prompt_writing') }}" class="mh-card pro-mind-card creativity-card">
+                <div class="creativity-icon"><i class="fa fa-lightbulb-o"></i></div>
+                <div class="creativity-title">Writing Prompt</div>
+                <div class="creativity-desc">Get inspired with a random creative writing prompt and start a story!</div>
+            </a>
+        </div>
+    </div>
+    <div class="mh-section">
+        <h3 class="mh-section-title mh-heading"><i class="fa fa-support"></i> Support & Inspiration</h3>
+        <div class="mh-card-row mh-creativity-row">
+            <a href="{{ url_for('mental_quotes') }}" class="mh-card pro-mind-card creativity-card">
+                <div class="creativity-icon"><i class="fa fa-quote-left"></i></div>
+                <div class="creativity-title">Uplifting Quotes</div>
+                <div class="creativity-desc">Find motivation and comfort in carefully selected inspirational quotes to brighten your day.</div>
+            </a>
+            <a href="{{ url_for('mental_resources') }}" class="mh-card pro-mind-card creativity-card">
+                <div class="creativity-icon"><i class="fa fa-graduation-cap"></i></div>
+                <div class="creativity-title">Trusted Resources</div>
+                <div class="creativity-desc">Access professional mental health resources and support networks curated for your well-being.</div>
+            </a>
+        </div>
+    </div>
+</div>
+<style>
+.mh-dashboard-dark {
+    background: #181c24;
+    color: #eaf0fa;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.mh-welcome-container {
+    max-width: 1000px;
+    margin: 0 auto 32px auto;
+    background: #23283a;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(20,30,50,0.18);
+    padding: 18px 120px 18px 120px;
+    text-align: center;
+}
+.mh-welcome h2 {
+    color: #7ed957;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.mh-welcome-text {
+    font-size: 1.1rem;
+    color: #eaf0fa;
+    font-weight: 400;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+.mh-heading {
+    color: #4f8cff !important;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto 12px auto;
+    font-weight: 800;
+}
+.mh-section {
+    margin: 0 auto 36px auto;
+    max-width: 900px;
+}
+.mh-section-title {
+    color: #7ed957;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-align: center;
+}
+.mh-card-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.mh-card {
+    background: #23283a;
+    color: #eaf0fa;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(30, 40, 60, 0.18);
+    padding: 28px 24px 22px 24px;
+    min-width: 220px;
+    max-width: 320px;
+    flex: 1 1 220px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.mh-card:hover {
+    box-shadow: 0 8px 32px rgba(20, 42, 77, 0.22);
+    transform: translateY(-4px) scale(1.03);
+}
+.mh-card h3, .mh-card h4 {
+    color: #4f8cff;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-align: center;
+    width: 100%;
+}
+.mh-card p {
+    color: #eaf0fa;
+    font-size: 1.05rem;
+    margin-bottom: 0;
+    text-align: center;
+}
+@media (max-width: 900px) {
+    .mh-card-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .mh-section {
+        padding: 0 8px;
+    }
+}
+.mh-mindfulness-row {
+    flex-wrap: wrap;
+    gap: 24px 18px;
+    justify-content: center;
+}
+.pro-mind-card {
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    color: #eaf0fa;
+    border: 1.5px solid #2e354a;
+    min-width: 210px;
+    max-width: 260px;
+    padding: 28px 18px 22px 18px;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s, border 0.2s;
+    margin-bottom: 12px;
+}
+.pro-mind-card:hover {
+    box-shadow: 0 8px 32px rgba(79, 140, 255, 0.18);
+    border: 1.5px solid #4f8cff;
+    transform: translateY(-4px) scale(1.04);
+}
+.mind-icon {
+    font-size: 2.1rem;
+    color: #7ed957;
+    margin-bottom: 10px;
+}
+.mind-title {
+    color: #4f8cff;
+    font-size: 1.18rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.mind-desc {
+    color: #eaf0fa;
+    font-size: 1.01rem;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+.mh-creativity-row {
+    flex-wrap: wrap;
+    gap: 24px 18px;
+    justify-content: center;
+}
+.creativity-card {
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    color: #eaf0fa;
+    border: 1.5px solid #2e354a;
+    min-width: 210px;
+    max-width: 260px;
+    padding: 28px 18px 22px 18px;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: box-shadow 0.2s, transform 0.2s, border 0.2s;
+    margin-bottom: 12px;
+}
+.creativity-card:hover {
+    box-shadow: 0 8px 32px rgba(79, 140, 255, 0.18);
+    border: 1.5px solid #4f8cff;
+    transform: translateY(-4px) scale(1.04);
+}
+.creativity-icon {
+    font-size: 2.1rem;
+    color: #7ed957;
+    margin-bottom: 10px;
+}
+.creativity-title {
+    color: #4f8cff;
+    font-size: 1.18rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.creativity-desc {
+    color: #eaf0fa;
+    font-size: 1.01rem;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+.mh-journal-section-heading {
+    color: #4f8cff;
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    text-align: center;
+    width: 100%;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+@media (max-width: 600px) {
+    .mh-welcome-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .mh-welcome h2 {
+        font-size: 1.2rem;
+    }
+    .mh-welcome-text {
+        font-size: 0.95rem;
+    }
+}
+@media (min-width: 601px) and (max-width: 1024px) {
+    .mh-welcome-container {
+        padding-left: 48px;
+        padding-right: 48px;
+    }
+}
+</style>
+{% endblock %} 

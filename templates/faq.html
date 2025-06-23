@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ - Healthcare AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .faq-hero {
+            background: linear-gradient(135deg, #4f8cff 0%, #38b6ff 100%);
+            color: #fff;
+            border-radius: 24px 24px 0 0;
+            padding: 2.5em 2em 1.5em 2em;
+            text-align: center;
+            margin-bottom: 2em;
+            box-shadow: 0 4px 24px rgba(79, 140, 255, 0.08);
+        }
+        .faq-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5em;
+        }
+        .faq-hero p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .faq-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2em;
+            margin-bottom: 2em;
+        }
+        .faq-card {
+            background: #f8fbff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+            padding: 2em 1.5em 1.5em 1.5em;
+            margin-bottom: 0.5em;
+            transition: box-shadow 0.2s;
+        }
+        .faq-card:hover {
+            box-shadow: 0 6px 24px rgba(44, 62, 80, 0.13);
+        }
+        .faq-question {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2d3e50;
+            margin-bottom: 0.7em;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .faq-question i {
+            color: #4f8cff;
+            font-size: 1.2rem;
+        }
+        .faq-answer {
+            color: #4a5a6a;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        @media (max-width: 900px) {
+            .faq-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        .faq-support {
+            background: #e3f0ff;
+            border-radius: 16px;
+            padding: 2em 1.5em;
+            text-align: center;
+            margin-top: 2em;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+        }
+        .faq-support h3 {
+            color: #4f8cff;
+            font-size: 1.3rem;
+            margin-bottom: 0.5em;
+        }
+        .faq-support p {
+            color: #2d3e50;
+            font-size: 1rem;
+            margin-bottom: 1em;
+        }
+        .faq-support a {
+            display: inline-block;
+            background: linear-gradient(135deg, #4f8cff, #38b6ff);
+            color: #fff;
+            padding: 0.8em 2em;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .faq-support a:hover {
+            background: linear-gradient(135deg, #2d3e50, #34495e);
+        }
+    </style>
+</head>
+<body>
+<div class="main-curved-container">
+    <main class="main-content">
+        <div class="faq-hero">
+            <h1><i class="fa fa-question-circle"></i> Frequently Asked Questions</h1>
+            <p>Find answers to common questions about Healthcare AI. If you need more help, our support team is here for you.</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-card">
+                <div class="faq-question"><i class="fa fa-lightbulb-o"></i> What is Healthcare AI?</div>
+                <div class="faq-answer">Healthcare AI is an AI-powered platform designed to help users manage their health, book appointments, set reminders, and get health information.</div>
+            </div>
+            <div class="faq-card">
+                <div class="faq-question"><i class="fa fa-lock"></i> Is my data secure?</div>
+                <div class="faq-answer">Yes, your data is encrypted and stored securely. We value your privacy and never share your information with third parties.</div>
+            </div>
+            <div class="faq-card">
+                <div class="faq-question"><i class="fa fa-user-md"></i> Can I get medical advice?</div>
+                <div class="faq-answer">Healthcare AI provides information and support, but it does not replace professional medical advice. Always consult a healthcare provider for medical concerns.</div>
+            </div>
+            <div class="faq-card">
+                <div class="faq-question"><i class="fa fa-calendar-check-o"></i> How do I book an appointment?</div>
+                <div class="faq-answer">Go to the <a href="{{ url_for('appointments') }}">Appointments</a> section, fill in the required details, and submit your request. You will receive a confirmation and reminders.</div>
+            </div>
+            <div class="faq-card">
+                <div class="faq-question"><i class="fa fa-medkit"></i> How do I set a pill reminder?</div>
+                <div class="faq-answer">Navigate to the <a href="{{ url_for('pill_reminder') }}">Pill Reminder</a> section, enter your medication details and time, and save the reminder. You will receive notifications as scheduled.</div>
+            </div>
+            <div class="faq-card">
+                <div class="faq-question"><i class="fa fa-support"></i> Who can I contact for support?</div>
+                <div class="faq-answer">You can contact our support team via the <a href="mailto:support@healthcareai.com">Contact page</a> or email us at <a href="mailto:support@healthcareai.com">support@healthcareai.com</a>.</div>
+            </div>
+        </div>
+        <div class="faq-support">
+            <h3><i class="fa fa-life-ring"></i> Need more help?</h3>
+            <p>Our support team is available to assist you with any questions or issues you may have.</p>
+            <a href="mailto:support@healthcareai.com"><i class="fa fa-envelope"></i> Contact Support</a>
+        </div>
+    </main>
+</div>
+</body>
+</html> 

@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  body, .review-bg {
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%) !important;
+    min-height: 100vh;
+  }
+  .review-main-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1rem 2rem 1rem;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 6px 32px rgba(44, 62, 80, 0.10);
+  }
+  .review-status-card {
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    background: #fff;
+    transition: box-shadow 0.2s, transform 0.2s;
+    margin-bottom: 1.5rem;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .review-status-card .card-body {
+    padding: 1.2rem 1.3rem 1.1rem 1.3rem;
+  }
+  .review-status-card:hover {
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18);
+    transform: translateY(-2px) scale(1.01);
+  }
+  .review-section-header {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #4f8cff;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+  .review-badge {
+    font-size: 1rem;
+    padding: 0.3em 0.8em;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-left: 0.5em;
+  }
+  .review-badge-normal { background: #e6f9ec; color: #1abc9c; }
+  .review-badge-under { background: #fffbe6; color: #f1c40f; }
+  .review-badge-over { background: #ffeaea; color: #e74c3c; }
+  .review-badge-na { background: #e3e8ee; color: #888; }
+  .review-table th, .review-table td { vertical-align: middle; }
+  .review-table th { background: #f4f8fc; color: #4f8cff; }
+  .review-table tr:hover { background: #f0f7ff; }
+  .review-alert { border-radius: 10px; font-size: 1.08rem; }
+  .review-status-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #2d3e50;
+    margin-bottom: 0.2em;
+    letter-spacing: 0.5px;
+  }
+  .review-status-note {
+    color: #4f8cff;
+    font-size: 1.08rem;
+    margin-bottom: 1.5em;
+    font-weight: 500;
+  }
+  @media (max-width: 991px) {
+    .review-main-container { padding: 1.2rem 0.2rem; }
+    .review-status-title { font-size: 1.5rem; }
+    .review-status-card { min-height: 180px; }
+  }
+  @media (max-width: 767px) {
+    .review-main-container { padding: 0.5rem 0; }
+    .review-status-title { font-size: 1.2rem; }
+    .review-status-card { min-height: 120px; }
+    .review-section-header { font-size: 1rem; }
+  }
+</style>
+<div class="review-bg py-4">
+  <div class="review-main-container">
+    <div class="row mb-4 justify-content-center">
+      <div class="col-12 text-center">
+        <div class="review-status-title">Your Health Status</div>
+        <div class="review-status-note">This page always shows your latest health status when you log in.</div>
+      </div>
+    </div>
+    {% if abnormal %}
+      <div class="row mb-3 justify-content-center">
+        <div class="col-lg-10">
+          <div class="alert alert-danger text-center review-alert mb-4"><strong>Alert:</strong> Some values are out of healthy range. Consult a physician.</div>
+        </div>
+      </div>
+    {% endif %}
+    <div class="row g-4 mb-3 justify-content-center">
+      <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+        <div class="review-status-card w-100">
+          <div class="card-body">
+            <div class="review-section-header"><i class="fa fa-user-md"></i> User Summary</div>
+            <p><strong>Name:</strong> {{ user.name }}</p>
+            <p><strong>Age:</strong> {{ user.age }}</p>
+            <p><strong>Gender:</strong> {{ user.gender }}</p>
+            <p><strong>BMI:</strong> {{ bmi }}
+              {% if bmi_category=='Normal' %}<span class="review-badge review-badge-normal">{{ bmi_category }}</span>{% elif bmi_category=='Underweight' %}<span class="review-badge review-badge-under">{{ bmi_category }}</span>{% elif bmi_category=='Overweight' or bmi_category=='Obese' %}<span class="review-badge review-badge-over">{{ bmi_category }}</span>{% else %}<span class="review-badge review-badge-na">N/A</span>{% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+        <div class="review-status-card w-100">
+          <div class="card-body">
+            <div class="review-section-header"><i class="fa fa-heartbeat"></i> Vitals Overview</div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Heart Rate: <span class="{% if 'Heart Rate' in abnormal %}text-danger fw-bold{% endif %}">{{ vitals.heart_rate }} bpm</span></li>
+              <li class="list-group-item">Blood Pressure: <span class="{% if 'Blood Pressure' in abnormal %}text-danger fw-bold{% endif %}">{{ vitals.bp_systolic }}/{{ vitals.bp_diastolic }} mmHg</span></li>
+              <li class="list-group-item">Blood Sugar (Fasting): <span class="{% if 'Blood Sugar (Fasting)' in abnormal %}text-danger fw-bold{% endif %}">{{ vitals.blood_sugar_fasting }} mg/dL</span></li>
+              <li class="list-group-item">Blood Sugar (Random): <span class="{% if 'Blood Sugar (Random)' in abnormal %}text-danger fw-bold{% endif %}">{{ vitals.blood_sugar_random }} mg/dL</span></li>
+              <li class="list-group-item">SpO₂: <span class="{% if 'SpO2' in abnormal %}text-danger fw-bold{% endif %}">{{ vitals.spo2 }}%</span></li>
+              <li class="list-group-item">Temperature: <span class="{% if 'Temperature' in abnormal %}text-danger fw-bold{% endif %}">{{ vitals.temperature }} °F</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-12 d-flex align-items-stretch">
+        <div class="review-status-card w-100">
+          <div class="card-body">
+            <div class="review-section-header"><i class="fa fa-flask"></i> Lab Test Results</div>
+            <div class="row g-2">
+              <div class="col-6">HDL Cholesterol: <span class="{% if 'HDL Cholesterol' in abnormal %}text-danger fw-bold{% endif %}">{{ labs.cholesterol_hdl }} mg/dL</span></div>
+              <div class="col-6">LDL Cholesterol: <span class="{% if 'LDL Cholesterol' in abnormal %}text-danger fw-bold{% endif %}">{{ labs.cholesterol_ldl }} mg/dL</span></div>
+              <div class="col-6">Hemoglobin: <span class="{% if 'Hemoglobin' in abnormal %}text-danger fw-bold{% endif %}">{{ labs.hemoglobin }} g/dL</span></div>
+              <div class="col-6">Vitamin D: <span class="{% if 'Vitamin D' in abnormal %}text-danger fw-bold{% endif %}">{{ labs.vitamin_d }} ng/mL</span></div>
+              <div class="col-12">Vitamin B12: <span class="{% if 'Vitamin B12' in abnormal %}text-danger fw-bold{% endif %}">{{ labs.vitamin_b12 }} pg/mL</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-4 mb-3 justify-content-center">
+      <div class="col-lg-8 d-flex align-items-stretch">
+        <div class="review-status-card w-100">
+          <div class="card-body">
+            <div class="review-section-header"><i class="fa fa-line-chart"></i> Health Trends (Recent Entries)</div>
+            <div class="table-responsive">
+              <table class="table table-bordered table-sm review-table mb-0">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Heart Rate</th>
+                    <th>Blood Pressure</th>
+                    <th>Blood Sugar</th>
+                    <th>SpO₂</th>
+                    <th>Temp (°F)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for entry in trends %}
+                  <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.heart_rate }}</td>
+                    <td>{{ entry.bp }}</td>
+                    <td>{{ entry.sugar }}</td>
+                    <td>{{ entry.spo2 }}</td>
+                    <td>{{ entry.temp }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 d-flex flex-column align-items-stretch">
+        <div class="review-status-card mb-4 w-100">
+          <div class="card-body">
+            <div class="review-section-header"><i class="fa fa-lightbulb-o"></i> Lifestyle Recommendations</div>
+            <ul class="mb-0">
+              <li><strong>Diet:</strong> {{ recommendations.diet }}</li>
+              <li><strong>Exercise:</strong> {{ recommendations.exercise }}</li>
+              <li><strong>Sleep:</strong> {{ recommendations.sleep }}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="review-status-card w-100">
+          <div class="card-body">
+            <div class="review-section-header"><i class="fa fa-calendar"></i> Review Dates</div>
+            <p><strong>Last Review:</strong> {{ last_review }}</p>
+            <p><strong>Next Suggested Review:</strong> {{ next_review }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

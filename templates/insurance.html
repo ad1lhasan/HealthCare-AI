@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% block title %}Insurance{% endblock %}
+{% block content %}
+<div class="back-btn-container"><a href="{{ url_for('home') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back</a></div>
+<div class="insurance-container">
+    <div class="insurance-header">
+        <h2><i class="fa fa-shield"></i> Insurance Management</h2>
+        <p class="insurance-desc">Manage your health and life insurance policies. Explore more policy options from trusted providers.</p>
+    </div>
+    <div class="insurance-form-card">
+        <form method="POST" class="insurance-form">
+            <div class="form-group">
+                <label for="insurance_type">Insurance Type</label>
+                <select name="insurance_type" id="insurance_type" required>
+                    <option value="Health">Health Insurance</option>
+                    <option value="Life">Life Insurance</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="provider">Provider</label>
+                <input type="text" name="provider" id="provider" required placeholder="e.g. Aetna, LIC, UnitedHealthcare">
+            </div>
+            <div class="form-group">
+                <label for="policy_number">Policy Number</label>
+                <input type="text" name="policy_number" id="policy_number" required placeholder="e.g. 1234567890">
+            </div>
+            <div class="form-group">
+                <label for="valid_until">Valid Until</label>
+                <input type="date" name="valid_until" id="valid_until">
+            </div>
+            <button type="submit" class="insurance-btn">Add Insurance</button>
+        </form>
+    </div>
+    <div class="insurance-list-card">
+        <h3><i class="fa fa-list"></i> Your Insurance Policies</h3>
+        {% if insurances and insurances|length > 0 %}
+        <div class="insurance-table-wrapper">
+            <table class="insurance-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Provider</th>
+                        <th>Policy Number</th>
+                        <th>Valid Until</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ins in insurances %}
+                    <tr>
+                        <td>{{ ins.type }}</td>
+                        <td>{{ ins.provider }}</td>
+                        <td>{{ ins.policy_number }}</td>
+                        <td>{{ ins.valid_until or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="insurance-empty">No insurance policies added yet.</div>
+        {% endif %}
+    </div>
+    <div class="insurance-policies-explore">
+        <h4><i class="fa fa-external-link"></i> Explore Insurance Policies</h4>
+        <div class="policy-links">
+            <a href="https://www.google.com/search?q=best+health+insurance+policies" target="_blank" class="policy-link health-link"><i class="fa fa-medkit"></i> Health Insurance Policies</a>
+            <a href="https://www.google.com/search?q=best+life+insurance+policies" target="_blank" class="policy-link life-link"><i class="fa fa-heart"></i> Life Insurance Policies</a>
+        </div>
+        <div class="policy-links-desc">These links will take you to Google to explore the latest and most trusted health and life insurance policies from top providers.</div>
+    </div>
+</div>
+<style>
+.back-btn-container {
+    margin-bottom: 12px;
+}
+.back-btn {
+    display: inline-block;
+    background: #f8fafc;
+    color: #4f8cff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 18px;
+    text-decoration: none;
+    font-size: 1.05rem;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
+    transition: background 0.2s, color 0.2s;
+}
+.back-btn i {
+    margin-right: 8px;
+}
+.back-btn:hover {
+    background: #4f8cff;
+    color: #fff;
+}
+.insurance-container {
+    max-width: 900px;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(44, 62, 80, 0.10);
+    padding: 32px 36px 36px 36px;
+}
+.insurance-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.insurance-header h2 {
+    color: #4f8cff;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.insurance-desc {
+    color: #2d3e50;
+    font-size: 1.08rem;
+    margin-bottom: 0;
+}
+.insurance-form-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    margin-bottom: 32px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.insurance-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1em;
+}
+.form-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3e50;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    margin-bottom: 1em;
+}
+.form-group input:focus, .form-group select:focus {
+    border: 1.5px solid #4f8cff;
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.insurance-btn {
+    margin-top: 0.5em;
+    padding: 10px 0;
+    width: 100%;
+    background: #4f8cff;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+}
+.insurance-btn:hover {
+    background: #2d3e50;
+}
+.insurance-list-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    margin-bottom: 32px;
+}
+.insurance-list-card h3 {
+    color: #4f8cff;
+    font-weight: 700;
+    margin-bottom: 1.2em;
+    text-align: center;
+}
+.insurance-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+.insurance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+.insurance-table th, .insurance-table td {
+    padding: 0.7em 1em;
+    text-align: left;
+    border-bottom: 1px solid #e3e8ee;
+}
+.insurance-table th {
+    background: #f0f7ff;
+    color: #4f8cff;
+    font-weight: 600;
+}
+.insurance-table tr:last-child td {
+    border-bottom: none;
+}
+.insurance-empty {
+    color: #b0b8c1;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-top: 1em;
+}
+.insurance-policies-explore {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    margin-bottom: 0;
+    margin-top: 32px;
+    text-align: center;
+}
+.insurance-policies-explore h4 {
+    color: #4f8cff;
+    font-weight: 700;
+    margin-bottom: 1em;
+}
+.policy-links {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 1em;
+}
+.policy-link {
+    background: #f8fafc;
+    color: #2d3e50;
+    border-radius: 8px;
+    padding: 12px 24px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.08rem;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.policy-link.health-link i {
+    color: #4f8cff;
+}
+.policy-link.life-link i {
+    color: #d32f2f;
+}
+.policy-link:hover {
+    background: linear-gradient(90deg, #4f8cff 0%, #38b6ff 100%);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.13);
+}
+.policy-links-desc {
+    color: #888;
+    font-size: 0.98rem;
+    margin-top: 0.5em;
+    text-align: center;
+}
+@media (max-width: 700px) {
+    .insurance-container {
+        padding: 16px 4px 18px 4px;
+    }
+    .insurance-form-card, .insurance-list-card, .insurance-policies-explore {
+        padding: 14px 4px 10px 4px;
+    }
+    .policy-links {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Healthcare AI{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <nav class="main-navbar">
+        <div class="brand"><i class="fa fa-plus-circle" style="color:#4f8cff;"></i> Healthcare AI</div>
+        <ul class="nav-links">
+            <li class="nav-profile">
+                <img src="{{ url_for('static', filename=profile_picture) }}" alt="Profile" class="profile-avatar-navbar">
+                <span class="profile-navbar-username">{{ session.get('username', 'User') }}</span>
+            </li>
+            <li><a href="{{ url_for('home') }}" title="Home"><i class="fa fa-home"></i></a></li>
+            <li><a href="{{ url_for('symptom_checker') }}" title="Symptom Checker"><i class="fa fa-stethoscope"></i></a></li>
+            <li><a href="{{ url_for('chat_assistant') }}" title="AI Chat"><i class="fa fa-comments"></i></a></li>
+            <li><a href="{{ url_for('bmi_calculator') }}" title="BMI Calculator"><i class="fa fa-calculator"></i></a></li>
+            <li><a href="{{ url_for('appointments') }}" title="Appointments"><i class="fa fa-calendar"></i></a></li>
+            <li><a href="{{ url_for('pill_reminder') }}" title="Pill Reminder"><i class="fa fa-bell"></i></a></li>
+            <li><a href="{{ url_for('blood_donation') }}" title="Blood Donation"><i class="fa fa-tint"></i></a></li>
+            <li><a href="{{ url_for('mental_health') }}" title="Mental Health"><i class="fa fa-heart"></i></a></li>
+            <li><a href="{{ url_for('insurance') }}" title="Insurance"><i class="fa fa-shield"></i></a></li>
+            <li><a href="{{ url_for('settings_page') }}" title="Settings"><i class="fa fa-cog"></i></a></li>
+            <li><a href="{{ url_for('logout') }}" class="logout-link" title="Logout"><i class="fa fa-sign-out"></i></a></li>
+        </ul>
+    </nav>
+    <div style="margin-top: 70px;"></div>
+    {% block content %}{% endblock %}
+</body>
+</html>
+
+<style>
+.profile-avatar-navbar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #1e90ff;
+    box-shadow: 0 2px 8px rgba(30,144,255,0.10);
+    background: #f7fafd;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+.nav-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+}
+.profile-navbar-username {
+    font-weight: 600;
+    color: #222;
+    font-size: 1.05rem;
+}
+</style> 

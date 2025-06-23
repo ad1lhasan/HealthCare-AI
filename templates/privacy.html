@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Privacy Policy - Healthcare AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .privacy-hero {
+            background: linear-gradient(135deg, #4f8cff 0%, #38b6ff 100%);
+            color: #fff;
+            border-radius: 24px 24px 0 0;
+            padding: 2.5em 2em 1.5em 2em;
+            text-align: center;
+            margin-bottom: 2em;
+            box-shadow: 0 4px 24px rgba(79, 140, 255, 0.08);
+        }
+        .privacy-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5em;
+        }
+        .privacy-hero p {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .privacy-content {
+            background: #f8fbff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+            padding: 2em 2em 1.5em 2em;
+            color: #2d3e50;
+        }
+        .privacy-content h2 {
+            color: #4f8cff;
+            font-size: 1.3rem;
+            margin-top: 1.5em;
+        }
+        .privacy-content ul {
+            margin-left: 1.5em;
+        }
+        .privacy-content li {
+            margin-bottom: 0.7em;
+        }
+        @media (max-width: 700px) {
+            .privacy-content, .privacy-hero {
+                padding: 1em 0.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-curved-container">
+    <main class="main-content">
+        <div class="privacy-hero">
+            <h1><i class="fa fa-shield"></i> Privacy Policy</h1>
+            <p>Your privacy is important to us. Learn how we collect, use, and protect your information at Healthcare AI.</p>
+        </div>
+        <div class="privacy-content">
+            <h2>1. Information We Collect</h2>
+            <ul>
+                <li>Personal information you provide (name, email, etc.)</li>
+                <li>Health-related data you enter into the platform</li>
+                <li>Usage data (log files, device info, etc.)</li>
+            </ul>
+            <h2>2. How We Use Your Information</h2>
+            <ul>
+                <li>To provide and improve our services</li>
+                <li>To personalize your experience</li>
+                <li>To send notifications and reminders</li>
+                <li>To respond to your inquiries and support requests</li>
+            </ul>
+            <h2>3. Data Security</h2>
+            <ul>
+                <li>Your data is encrypted and stored securely</li>
+                <li>We use industry-standard security measures</li>
+                <li>Access to your data is restricted to authorized personnel only</li>
+            </ul>
+            <h2>4. Sharing of Information</h2>
+            <ul>
+                <li>We do not sell or share your personal information with third parties</li>
+                <li>We may share data only as required by law or to protect our rights</li>
+            </ul>
+            <h2>5. Your Choices</h2>
+            <ul>
+                <li>You can update or delete your information at any time</li>
+                <li>Contact us for any privacy-related requests</li>
+            </ul>
+            <h2>6. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify you of any significant changes.</p>
+            <h2>7. Contact</h2>
+            <p>If you have questions about this policy, please <a href="{{ url_for('contact') }}">contact us</a>.</p>
+        </div>
+    </main>
+</div>
+</body>
+</html> 

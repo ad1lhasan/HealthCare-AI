@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% block title %}Appointments{% endblock %}
+{% block content %}
+<div class="appt-container">
+    <div class="appt-card">
+        <h2 class="appt-title">Book an Appointment</h2>
+        <form method="POST" class="appt-form">
+            <div class="appt-input-group">
+                <label for="doctor">Doctor Name</label>
+                <input type="text" name="doctor" id="doctor" required placeholder="Enter doctor's name">
+            </div>
+            <div class="appt-input-group">
+                <label for="department">Department/Section</label>
+                <input type="text" name="department" id="department" required placeholder="e.g. Cardiology, Pediatrics">
+            </div>
+            <div class="appt-input-group">
+                <label for="date">Date</label>
+                <input type="date" name="date" id="date" required>
+            </div>
+            <div class="appt-input-group">
+                <label for="time">Time</label>
+                <input type="time" name="time" id="time" required>
+            </div>
+            <div class="appt-input-group">
+                <label for="reason">Reason</label>
+                <input type="text" name="reason" id="reason" placeholder="Reason for appointment">
+            </div>
+            <div class="appt-input-group appt-reminder-group">
+                <label for="reminder_time"><i class="fa fa-clock-o" style="margin-right:0.4em;color:#4f8cff;"></i>Reminder</label>
+                <select name="reminder_time" id="reminder_time" class="appt-reminder-select" required>
+                    <option value="1">1 hour before</option>
+                    <option value="4">4 hours before</option>
+                    <option value="8">8 hours before</option>
+                </select>
+            </div>
+            <button type="submit" class="appt-btn">Book Appointment</button>
+        </form>
+    </div>
+    <div class="appt-list-card">
+        <h3 class="appt-list-title">Your Appointments</h3>
+        {% if appointments %}
+        <div class="appt-list-table-wrapper">
+        <table class="appt-list-table">
+            <thead>
+                <tr>
+                    <th>Doctor</th>
+                    <th>Department</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+                    <td>{{ appt.doctor or '-' }}</td>
+                    <td>{{ appt.department or '-' }}</td>
+                    <td>{{ appt.appointment_datetime.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ appt.appointment_datetime.strftime('%H:%M') }}</td>
+                    <td>{{ appt.reason or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% else %}
+        <div class="appt-empty">No appointments yet.</div>
+        {% endif %}
+    </div>
+</div>
+<style>
+.appt-container {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: #f4f8fc;
+    padding: 2em 0 3em 0;
+    gap: 2.5em;
+}
+.appt-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
+    padding: 2.2em 2em 2em 2em;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.appt-title {
+    margin-top: 0;
+    margin-bottom: 1.2em;
+    font-size: 1.5rem;
+    color: #4f8cff;
+    font-weight: 700;
+    text-align: center;
+}
+.appt-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1em;
+}
+.appt-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+.appt-input-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3e50;
+}
+.appt-input-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+.appt-input-group input:focus {
+    border: 1.5px solid #4f8cff;
+    background: #f0f7ff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.appt-btn {
+    margin-top: 0.5em;
+    padding: 10px 0;
+    width: 100%;
+    background: #4f8cff;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+}
+.appt-btn:hover {
+    background: #2d3e50;
+}
+.appt-list-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
+    padding: 2em 1.5em 1.5em 1.5em;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.appt-list-title {
+    margin-top: 0;
+    margin-bottom: 1.2em;
+    font-size: 1.2rem;
+    color: #4f8cff;
+    font-weight: 700;
+    text-align: center;
+}
+.appt-list-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+.appt-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0.5em;
+    background: #f8fafc;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+.appt-list-table th, .appt-list-table td {
+    padding: 0.7em 1em;
+    text-align: left;
+    border-bottom: 1px solid #e3e8ee;
+}
+.appt-list-table th {
+    background: #f0f7ff;
+    color: #4f8cff;
+    font-weight: 600;
+}
+.appt-list-table tr:last-child td {
+    border-bottom: none;
+}
+.appt-empty {
+    color: #b0b8c1;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-top: 1em;
+}
+@media (max-width: 1000px) {
+    .appt-list-card {
+        max-width: 99vw;
+        padding: 1.2em 0.5em 1em 0.5em;
+    }
+}
+@media (max-width: 600px) {
+    .appt-card {
+        padding: 1.2em 0.5em 1em 0.5em;
+        max-width: 98vw;
+    }
+    .appt-list-table th, .appt-list-table td {
+        padding: 0.5em 0.5em;
+        font-size: 0.97rem;
+    }
+}
+.appt-reminder-group label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3e50;
+    margin-bottom: 0.2em;
+}
+.appt-reminder-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #4f8cff;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f8fafc;
+    color: #2d3e50;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
+    box-shadow: 0 1px 4px rgba(44,62,80,0.04);
+}
+.appt-reminder-select:focus {
+    border: 1.5px solid #2d3e50;
+    background: #f0f7ff;
+}
+</style>
+{% endblock %} 

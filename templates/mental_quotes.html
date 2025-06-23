@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+{% block title %}Uplifting Quotes{% endblock %}
+{% block content %}
+<div class="mh-dashboard-dark">
+    <div class="mh-feature-page quotes-center">
+        <a href="{{ url_for('mental_health') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="quotes-card">
+            <div class="quotes-header">
+                <span class="quotes-icon"><i class="fa fa-pagelines"></i></span>
+                <h2 class="quotes-title">Uplifting Quotes</h2>
+            </div>
+            <div class="quotes-toolbar">
+                <input type="text" id="quote-search" class="quote-search" placeholder="Search quotes..." oninput="filterQuotes()">
+                <button class="quote-btn random-btn" onclick="showRandomQuote(true)"><i class="fa fa-random"></i> Random Quote</button>
+                <button class="quote-btn fav-toggle-btn" id="fav-toggle-btn" onclick="toggleFavorites()"><i class="fa fa-heart"></i> Show Favorites</button>
+                <button class="quote-btn export-btn" onclick="exportFavorites()"><i class="fa fa-download"></i> Export Favorites</button>
+                <button class="quote-btn clear-btn" onclick="clearFavorites()"><i class="fa fa-trash"></i> Clear Favorites</button>
+            </div>
+            <div class="quotes-list" id="quotes-list">
+                {% set quotes = [
+                    "You don't have to control your thoughts. You just have to stop letting them control you. - Dan Millman",
+                    "Every day may not be good... but there's something good in every day. - Alice Morse Earle",
+                    "Happiness can be found even in the darkest of times, if one only remembers to turn on the light. - J.K. Rowling",
+                    "The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela",
+                    "Keep your face always toward the sunshine—and shadows will fall behind you. - Walt Whitman",
+                    "You are never too old to set another goal or to dream a new dream. - C.S. Lewis",
+                    "Difficult roads often lead to beautiful destinations.",
+                    "Believe you can and you're halfway there. - Theodore Roosevelt",
+                    "The only way to do great work is to love what you do. - Steve Jobs",
+                    "Start where you are. Use what you have. Do what you can. - Arthur Ashe",
+                    "What lies behind us and what lies before us are tiny matters compared to what lies within us. - Ralph Waldo Emerson",
+                    "You are braver than you believe, stronger than you seem, and smarter than you think. - A.A. Milne",
+                    "The best way to predict the future is to create it. - Peter Drucker",
+                    "It does not matter how slowly you go as long as you do not stop. - Confucius",
+                    "You miss 100% of the shots you don't take. - Wayne Gretzky",
+                    "The only limit to our realization of tomorrow will be our doubts of today. - Franklin D. Roosevelt",
+                    "Success is not final, failure is not fatal: It is the courage to continue that counts. - Winston Churchill",
+                    "The mind is everything. What you think you become. - Buddha",
+                    "Act as if what you do makes a difference. It does. - William James",
+                    "With the new day comes new strength and new thoughts. - Eleanor Roosevelt",
+                    "You are enough just as you are.",
+                    "The only person you are destined to become is the person you decide to be. - Ralph Waldo Emerson",
+                    "If you want to lift yourself up, lift up someone else. - Booker T. Washington",
+                    "The best way out is always through. - Robert Frost",
+                    "You are capable of amazing things.",
+                    "Let your hopes, not your hurts, shape your future. - Robert H. Schuller",
+                    "The sun himself is weak when he first rises, and gathers strength and courage as the day gets on. - Charles Dickens",
+                    "You are stronger than you think.",
+                    "No one can make you feel inferior without your consent. - Eleanor Roosevelt",
+                    "The only journey is the one within. - Rainer Maria Rilke",
+                    "Be yourself; everyone else is already taken. - Oscar Wilde",
+                    "The best preparation for tomorrow is doing your best today. - H. Jackson Brown, Jr.",
+                    "You are the artist of your own life. Don't hand the paintbrush to anyone else.",
+                    "The only thing standing between you and your goal is the story you keep telling yourself as to why you can't achieve it. - Jordan Belfort",
+                    "You are allowed to be both a masterpiece and a work in progress simultaneously.",
+                    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+                    "You are worthy of love and respect.",
+                    "The best view comes after the hardest climb.",
+                    "You are not a drop in the ocean. You are the entire ocean in a drop. - Rumi",
+                    "You are enough. You have enough. You do enough.",
+                    "The only way out is through. - Robert Frost",
+                    "You are more resilient than you realize.",
+                    "The best is yet to come.",
+                    "You are the light in someone's darkness.",
+                    "You are not alone. You are seen. You are heard.",
+                    "You are a work of art.",
+                    "You are a force of nature.",
+                    "You are a survivor.",
+                    "You are a warrior.",
+                    "You are a miracle."
+                ] %}
+                {% for quote in quotes %}
+                <div class="quote-item" data-quote="{{ quote|e }}"><i class="fa fa-pagelines"></i> {{ quote }}
+                    <button class="quote-btn copy-btn" onclick="copyQuote(this)"><i class="fa fa-copy"></i> Copy</button>
+                    <button class="quote-btn share-btn" onclick="shareQuote(this)"><i class="fa fa-share-alt"></i> Share</button>
+                    <button class="quote-btn fav-btn" onclick="toggleFavorite(this)"><i class="fa fa-heart-o"></i> Favorite</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.mh-dashboard-dark {
+    background: #181c24;
+    color: #eaf0fa;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+.mh-feature-page.quotes-center {
+    max-width: 600px;
+    margin: 60px auto 60px auto;
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    border-radius: 22px;
+    box-shadow: 0 8px 36px rgba(30,40,60,0.22);
+    padding: 44px 36px 36px 36px;
+    color: #eaf0fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.back-btn {
+    color: #4f8cff;
+    text-decoration: none;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: inline-block;
+    font-size: 1.08rem;
+    transition: color 0.2s;
+    align-self: flex-start;
+}
+.back-btn:hover {
+    color: #7ed957;
+    text-decoration: underline;
+}
+.quotes-card {
+    background: linear-gradient(135deg, #23283a 70%, #1a1e29 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    padding: 32px 24px 28px 24px;
+    color: #eaf0fa;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 600px;
+    overflow-y: auto;
+}
+.quotes-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.quotes-icon {
+    font-size: 2.3rem;
+    color: #7ed957;
+    margin-bottom: 8px;
+}
+.quotes-title {
+    color: #4f8cff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0;
+    letter-spacing: 1px;
+}
+.quotes-toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.quote-search {
+    background: #181c24;
+    color: #4f8cff;
+    border: 1.5px solid #4f8cff;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 1.05rem;
+    width: 180px;
+    transition: border 0.2s;
+}
+.quote-search:focus {
+    border: 1.5px solid #7ed957;
+    color: #7ed957;
+    outline: none;
+}
+.quote-btn {
+    background: linear-gradient(90deg, #4f8cff 0%, #38b6ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    padding: 5px 14px;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.10);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.quote-btn.copy-btn:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #4f8cff 100%);
+}
+.quote-btn.share-btn {
+    background: linear-gradient(90deg, #7ed957 0%, #4f8cff 100%);
+}
+.quote-btn.share-btn:hover {
+    background: linear-gradient(90deg, #4f8cff 0%, #7ed957 100%);
+}
+.quote-btn.fav-btn {
+    background: linear-gradient(90deg, #ffb84f 0%, #ff4f81 100%);
+    color: #fff;
+}
+.quote-btn.fav-btn.favorited, .quote-btn.fav-btn.favorited:hover {
+    background: linear-gradient(90deg, #ff4f81 0%, #ffb84f 100%);
+    color: #fff;
+}
+.quote-btn.fav-btn:hover {
+    background: linear-gradient(90deg, #ff4f81 0%, #ffb84f 100%);
+}
+.quote-btn.export-btn {
+    background: linear-gradient(90deg, #4f8cff 0%, #ffb84f 100%);
+    color: #fff;
+}
+.quote-btn.export-btn:hover {
+    background: linear-gradient(90deg, #ffb84f 0%, #4f8cff 100%);
+}
+.quote-btn.clear-btn {
+    background: linear-gradient(90deg, #ff4f81 0%, #23283a 100%);
+    color: #fff;
+}
+.quote-btn.clear-btn:hover {
+    background: linear-gradient(90deg, #23283a 0%, #ff4f81 100%);
+}
+.quotes-list {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    max-height: 400px;
+    overflow-y: auto;
+}
+.quote-item {
+    background: #181c24;
+    color: #eaf0fa;
+    border-left: 4px solid #4f8cff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    font-style: italic;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    transition: box-shadow 0.2s, border 0.2s, background 0.2s;
+}
+.quote-item.highlighted {
+    box-shadow: 0 0 0 3px #7ed95799;
+    border-left: 4px solid #7ed957;
+    background: #23283a;
+    z-index: 2;
+}
+.quote-item i {
+    color: #7ed957;
+    font-size: 1.1rem;
+}
+.quote-item.fav-animate {
+    animation: fav-pop 0.7s;
+}
+@keyframes fav-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.18); background: #7ed95733; }
+    100% { transform: scale(1); }
+}
+</style>
+<script>
+function copyQuote(btn) {
+    const quote = btn.parentElement.innerText.replace(/Copy\s*Share\s*Favorite$/, '').trim();
+    navigator.clipboard.writeText(quote).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.innerHTML = '<i class="fa fa-copy"></i> Copy'; }, 1200);
+    });
+}
+function shareQuote(btn) {
+    const quote = btn.parentElement.innerText.replace(/Copy\s*Share\s*Favorite$/, '').trim();
+    if (navigator.share) {
+        navigator.share({ text: quote })
+            .then(() => {
+                btn.textContent = 'Shared!';
+                setTimeout(() => { btn.innerHTML = '<i class="fa fa-share-alt"></i> Share'; }, 1200);
+            });
+    } else {
+        copyQuote(btn);
+    }
+}
+function toggleFavorite(btn) {
+    btn.classList.toggle('favorited');
+    const icon = btn.querySelector('i');
+    const item = btn.parentElement;
+    if (btn.classList.contains('favorited')) {
+        icon.classList.remove('fa-heart-o');
+        icon.classList.add('fa-heart');
+        item.classList.add('fav-animate');
+        setTimeout(() => item.classList.remove('fav-animate'), 700);
+    } else {
+        icon.classList.remove('fa-heart');
+        icon.classList.add('fa-heart-o');
+    }
+    updateFavorites();
+}
+function updateFavorites() {
+    const favs = Array.from(document.querySelectorAll('.quote-btn.fav-btn.favorited')).map(btn => btn.parentElement.getAttribute('data-quote'));
+    localStorage.setItem('favoriteQuotes', JSON.stringify(favs));
+}
+function loadFavorites() {
+    const favs = JSON.parse(localStorage.getItem('favoriteQuotes') || '[]');
+    document.querySelectorAll('.quote-item').forEach(item => {
+        const btn = item.querySelector('.fav-btn');
+        if (favs.includes(item.getAttribute('data-quote'))) {
+            btn.classList.add('favorited');
+            btn.querySelector('i').classList.remove('fa-heart-o');
+            btn.querySelector('i').classList.add('fa-heart');
+        } else {
+            btn.classList.remove('favorited');
+            btn.querySelector('i').classList.remove('fa-heart');
+            btn.querySelector('i').classList.add('fa-heart-o');
+        }
+    });
+}
+function filterQuotes() {
+    const search = document.getElementById('quote-search').value.toLowerCase();
+    document.querySelectorAll('.quote-item').forEach(item => {
+        const text = item.getAttribute('data-quote').toLowerCase();
+        item.style.display = text.includes(search) ? '' : 'none';
+    });
+}
+function showRandomQuote(animate) {
+    const items = Array.from(document.querySelectorAll('.quote-item')).filter(item => item.style.display !== 'none');
+    if (items.length === 0) return;
+    document.querySelectorAll('.quote-item').forEach(item => item.classList.remove('highlighted'));
+    const idx = Math.floor(Math.random() * items.length);
+    items[idx].classList.add('highlighted');
+    items[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (animate) {
+        items[idx].classList.add('fav-animate');
+        setTimeout(() => items[idx].classList.remove('fav-animate'), 700);
+    }
+}
+let showFavs = false;
+function toggleFavorites() {
+    showFavs = !showFavs;
+    const favs = JSON.parse(localStorage.getItem('favoriteQuotes') || '[]');
+    document.getElementById('fav-toggle-btn').innerHTML = showFavs ? '<i class="fa fa-heart"></i> Show All' : '<i class="fa fa-heart"></i> Show Favorites';
+    document.querySelectorAll('.quote-item').forEach(item => {
+        const isFav = favs.includes(item.getAttribute('data-quote'));
+        item.style.display = showFavs ? (isFav ? '' : 'none') : '';
+    });
+}
+function exportFavorites() {
+    const favs = JSON.parse(localStorage.getItem('favoriteQuotes') || '[]');
+    if (favs.length === 0) {
+        alert('No favorites to export!');
+        return;
+    }
+    const blob = new Blob([favs.join('\n\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'favorite_quotes.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+function clearFavorites() {
+    if (confirm('Are you sure you want to clear all favorites?')) {
+        localStorage.removeItem('favoriteQuotes');
+        loadFavorites();
+        if (showFavs) toggleFavorites();
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    loadFavorites();
+    // Randomize and highlight a quote on load
+    showRandomQuote(false);
+});
+</script>
+{% endblock %} 

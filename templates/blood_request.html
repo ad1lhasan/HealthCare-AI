@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+{% block title %}Blood Requests{% endblock %}
+{% block content %}
+<div class="back-btn-container"><a href="{{ url_for('home') }}" class="back-btn"><i class="fa fa-arrow-left"></i> Back</a></div>
+<div class="blood-request-container">
+    <div class="blood-request-header">
+        <h2><i class="fa fa-ambulance"></i> Blood Requests</h2>
+        <p class="blood-request-desc">Request blood in emergencies and see available donors for your blood group. Donors can accept to help directly from this page.</p>
+    </div>
+    <div class="request-blood-form-card">
+        <h3><i class="fa fa-plus-circle"></i> Request Blood</h3>
+        {% if request_success %}<div class="success-message">{{ request_success }}</div>{% endif %}
+        <form method="POST" class="request-blood-form">
+            <div class="form-group">
+                <label for="request_blood_group">Blood Group Needed</label>
+                <select name="request_blood_group" id="request_blood_group" required>
+                    <option value="">Select</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="units_needed">Units Needed</label>
+                <input type="number" name="units_needed" id="units_needed" min="1" max="10" required placeholder="e.g. 2">
+            </div>
+            <div class="form-group">
+                <label for="reason">Reason (optional)</label>
+                <input type="text" name="reason" id="reason" placeholder="e.g. Surgery, Accident">
+            </div>
+            <div class="form-group">
+                <label for="contact_info">Contact Info</label>
+                <input type="text" name="contact_info" id="contact_info" required placeholder="Phone or Email">
+            </div>
+            <button type="submit" class="request-btn">Submit Blood Request</button>
+        </form>
+    </div>
+    <div class="request-list-card">
+        <h4><i class="fa fa-exclamation-circle"></i> Recent Blood Requests</h4>
+        {% if accept_success %}<div class="success-message">{{ accept_success }}</div>{% endif %}
+        {% if requests and requests|length > 0 %}
+        <div class="request-table-wrapper">
+            <table class="request-table">
+                <thead>
+                    <tr>
+                        <th>Blood Group</th>
+                        <th>Units</th>
+                        <th>Reason</th>
+                        <th>Contact</th>
+                        <th>Requested At</th>
+                        <th>Available Donors</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in requests %}
+                    <tr>
+                        <td>{{ req.blood_group }}</td>
+                        <td>{{ req.units_needed }}</td>
+                        <td>{{ req.reason or '-' }}</td>
+                        <td>{{ req.contact_info }}</td>
+                        <td>{{ req.timestamp.strftime('%Y-%m-%d %H:%M') if req.timestamp else '-' }}</td>
+                        <td>
+                            {% if donors_by_group[req.id]|length > 0 %}
+                                <div class="donors-section">
+                                    <div class="donors-count">{{ donors_by_group[req.id]|length }} donor(s) available</div>
+                                    <div class="donors-details">
+                                        {% for donor, user in donors_by_group[req.id] %}
+                                        <div class="donor-card">
+                                            <div class="donor-info">
+                                                <div class="donor-name">{{ user.full_name or user.username }}</div>
+                                                <div class="donor-contact">
+                                                    {% if user.phone_number %}
+                                                        <i class="fa fa-phone"></i> {{ user.phone_number }}
+                                                    {% endif %}
+                                                    {% if user.email %}
+                                                        <i class="fa fa-envelope"></i> {{ user.email }}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="donor-last-donation">
+                                                    {% if donor.last_donation %}
+                                                        <i class="fa fa-calendar"></i> Last donated: {{ donor.last_donation.strftime('%Y-%m-%d') }}
+                                                    {% else %}
+                                                        <i class="fa fa-calendar"></i> First time donor
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            {% if not req.accepted_by %}
+                                            <form method="POST" style="display:inline;">
+                                                <input type="hidden" name="request_id" value="{{ req.id }}">
+                                                <input type="hidden" name="accept_donor_id" value="{{ donor.id }}">
+                                                <button type="submit" class="accept-donor-btn">Accept This Donor</button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span class="no-donors">No donors available</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if req.accepted_by %}
+                                {% set accepted_user = req.accepted_by_user %}
+                                <span class="accepted">
+                                    <i class="fa fa-check-circle"></i> Accepted by {{ accepted_user.full_name if accepted_user else 'Unknown' }}
+                                </span>
+                            {% elif donors_by_group[req.id]|length > 0 %}
+                                <span class="pending">
+                                    <i class="fa fa-clock-o"></i> Pending
+                                </span>
+                            {% else %}
+                                <span class="no-donors-status">
+                                    <i class="fa fa-exclamation-triangle"></i> No donors
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-list">No blood requests yet.</div>
+        {% endif %}
+    </div>
+</div>
+<style>
+.back-btn-container {
+    margin-bottom: 12px;
+}
+.back-btn {
+    display: inline-block;
+    background: #f8fafc;
+    color: #4f8cff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 18px;
+    text-decoration: none;
+    font-size: 1.05rem;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
+    transition: background 0.2s, color 0.2s;
+}
+.back-btn i {
+    margin-right: 8px;
+}
+.back-btn:hover {
+    background: #4f8cff;
+    color: #fff;
+}
+.blood-request-container {
+    max-width: 1100px;
+    margin: 40px auto 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(44, 62, 80, 0.10);
+    padding: 32px 36px 36px 36px;
+}
+.blood-request-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.blood-request-header h2 {
+    color: #d32f2f;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.blood-request-desc {
+    color: #2d3e50;
+    font-size: 1.08rem;
+    margin-bottom: 0;
+}
+.request-blood-form-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto 32px auto;
+}
+.request-blood-form-card h3 {
+    color: #d32f2f;
+    font-weight: 700;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.form-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3e50;
+}
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    margin-bottom: 1em;
+}
+.form-group input:focus, .form-group select:focus {
+    border: 1.5px solid #d32f2f;
+    background: #fff0f0;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.08);
+}
+.request-btn, .accept-btn {
+    margin-top: 0.5em;
+    padding: 10px 0;
+    width: 100%;
+    background: #d32f2f;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.07);
+}
+.accept-btn {
+    width: auto;
+    padding: 6px 18px;
+    margin-top: 0;
+    margin-left: 0.5em;
+    font-size: 1rem;
+}
+.request-btn:hover, .accept-btn:hover {
+    background: #4f8cff;
+}
+.accept-donor-btn {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+.accept-donor-btn:hover {
+    background: #218838;
+}
+.donors-section {
+    margin-top: 8px;
+}
+.donors-count {
+    font-size: 0.9rem;
+    color: #4f8cff;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.donors-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.donor-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+.donor-info {
+    margin-bottom: 8px;
+}
+.donor-name {
+    font-weight: 600;
+    color: #2d3e50;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+.donor-contact {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 4px;
+}
+.donor-contact i {
+    margin-right: 4px;
+    width: 12px;
+}
+.donor-last-donation {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+.donor-last-donation i {
+    margin-right: 4px;
+    width: 12px;
+}
+.success-message {
+    background: #eaf6ff;
+    color: #1a4b7a;
+    border: 1px solid #b3e0ff;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 1em;
+}
+.request-list-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 20px 18px 20px;
+    margin-top: 36px;
+}
+.request-list-card h4 {
+    color: #d32f2f;
+    font-weight: 700;
+    margin-bottom: 1em;
+    text-align: center;
+}
+.request-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+.request-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #f8fafc;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+.request-table th, .request-table td {
+    padding: 0.7em 1em;
+    text-align: left;
+    border-bottom: 1px solid #e3e8ee;
+}
+.request-table th {
+    background: #fff0f0;
+    color: #d32f2f;
+    font-weight: 600;
+}
+.request-table tr:last-child td {
+    border-bottom: none;
+}
+.donor-list-inline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.no-donors {
+    color: #b0b8c1;
+    font-size: 0.98rem;
+}
+.accepted {
+    color: #4f8cff;
+    font-weight: 700;
+}
+.pending {
+    color: #888;
+    font-weight: 600;
+}
+.empty-list {
+    color: #b0b8c1;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-top: 1em;
+}
+@media (max-width: 900px) {
+    .blood-request-container {
+        padding: 16px 4px 18px 4px;
+    }
+    .request-blood-form-card, .request-list-card {
+        padding: 14px 4px 10px 4px;
+    }
+}
+</style>
+{% endblock %} 

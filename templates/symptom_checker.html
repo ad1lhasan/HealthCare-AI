@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Symptom Checker{% endblock %}
+{% block content %}
+<style>
+.symptom-hero {
+    background: linear-gradient(135deg, #4f8cff 0%, #38b6ff 100%);
+    color: #fff;
+    border-radius: 24px 24px 0 0;
+    padding: 2.5em 2em 1.5em 2em;
+    text-align: center;
+    margin-bottom: 2em;
+    box-shadow: 0 4px 24px rgba(79, 140, 255, 0.08);
+}
+.symptom-hero h1 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin-bottom: 0.5em;
+}
+.symptom-hero p {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0 auto;
+    max-width: 600px;
+}
+.symptom-form-card {
+    background: #f8fbff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+    padding: 2em 2em 1.5em 2em;
+    max-width: 600px;
+    margin: 0 auto 2em auto;
+}
+.symptom-checkbox-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-bottom: 1.5em;
+}
+.symptom-checkbox {
+    background: #fff;
+    border: 1.5px solid #bcd6f6;
+    border-radius: 10px;
+    padding: 0.7em 1.2em;
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    font-size: 1rem;
+    color: #2d3e50;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.04);
+}
+.symptom-checkbox input[type="checkbox"] {
+    accent-color: #4f8cff;
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 0.5em;
+}
+.symptom-checkbox input[type="checkbox"]:focus + span {
+    outline: 2px solid #4f8cff;
+}
+.symptom-checkbox:hover, .symptom-checkbox input[type="checkbox"]:checked + span {
+    border-color: #4f8cff;
+    box-shadow: 0 2px 8px rgba(79, 140, 255, 0.08);
+}
+.symptom-form-label {
+    font-weight: 600;
+    color: #4f8cff;
+    margin-bottom: 0.7em;
+    display: block;
+}
+.symptom-form-extra {
+    margin: 1.2em 0 1.5em 0;
+}
+.symptom-form-card button {
+    background: linear-gradient(135deg, #4f8cff, #38b6ff);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9em 2em;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 1em;
+}
+.symptom-form-card button:hover {
+    background: linear-gradient(135deg, #2d3e50, #34495e);
+}
+.symptom-result {
+    border-radius: 14px;
+    background: #e3f0ff;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.07);
+    padding: 1.5em 1.2em;
+    margin: 2em auto 0 auto;
+    max-width: 650px;
+    color: #2d3e50;
+    font-size: 1.08rem;
+}
+@media (max-width: 700px) {
+    .symptom-form-card, .symptom-result {
+        padding: 1em 0.5em;
+    }
+    .symptom-checkbox-list {
+        gap: 0.5em;
+    }
+}
+</style>
+<div class="symptom-hero">
+    <h1><i class="fa fa-stethoscope"></i> Symptom Checker</h1>
+    <p>Check your symptoms and get instant AI-powered health insights. Select your symptoms below and let our assistant help you understand possible causes and next steps.</p>
+</div>
+<div class="symptom-form-card">
+    <form method="POST">
+        <label class="symptom-form-label">Select common symptoms:</label>
+        <div class="symptom-checkbox-list">
+            {% for symptom in [
+                'Fever', 'Cough', 'Headache', 'Fatigue', 'Sore throat', 'Shortness of breath',
+                'Nausea', 'Vomiting', 'Diarrhea', 'Muscle pain', 'Chest pain', 'Rash', 'Dizziness',
+                'Loss of taste', 'Loss of smell', 'Stomach ache', 'Chills'] %}
+            <label class="symptom-checkbox">
+                <input type="checkbox" name="common_symptoms" value="{{ symptom }}">
+                <span>{{ symptom }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        <div class="symptom-form-extra">
+            <label class="symptom-form-label">Other symptoms (comma separated):</label>
+            <input type="text" name="extra_symptoms" placeholder="e.g. sneezing, runny nose" style="width:100%;padding:0.7em;border-radius:8px;border:1.5px solid #bcd6f6;">
+        </div>
+        <button type="submit"><i class="fa fa-search"></i> Check</button>
+    </form>
+</div>
+{% if result %}
+    <div class="symptom-result">{{ result|safe }}</div>
+{% endif %}
+{% endblock %} 

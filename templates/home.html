@@ -1,0 +1,1468 @@
+<!-- START OF FILE home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Healthcare AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="sidebar">
+    <div class="sidebar-header">
+        <span class="close-btn"><i class="fa fa-times"></i></span>
+        <div class="user-info">
+            <i class="fa fa-user-circle"></i> {{ session.get('username', 'User') }}
+        </div>
+    </div>
+    <div class="sidebar-content">
+        {% if session.get('is_admin') %}
+        <a href="{{ url_for('admin_dashboard') }}" class="sidebar-item">
+            <i class="fa fa-shield"></i>
+            <span>Admin Dashboard</span>
+        </a>
+        {% endif %}
+        <a href="{{ url_for('symptom_checker') }}" class="sidebar-item">
+            <i class="fa fa-stethoscope"></i>
+            <span>Symptom Checker</span>
+        </a>
+        <a href="{{ url_for('chat_assistant') }}" class="sidebar-item">
+            <i class="fa fa-comments"></i>
+            <span>AI Health Chat</span>
+        </a>
+        <a href="{{ url_for('bmi_calculator') }}" class="sidebar-item">
+            <i class="fa fa-calculator"></i>
+            <span>BMI Calculator</span>
+        </a>
+        <a href="{{ url_for('appointments') }}" class="sidebar-item">
+            <i class="fa fa-calendar"></i>
+            <span>Appointments</span>
+        </a>
+        <a href="{{ url_for('pill_reminder') }}" class="sidebar-item">
+            <i class="fa fa-bell"></i>
+            <span>Pill Reminder</span>
+        </a>
+        <a href="{{ url_for('blood_donation') }}" class="sidebar-item">
+            <i class="fa fa-tint"></i>
+            <span>Blood Donation</span>
+        </a>
+        <a href="{{ url_for('mental_health') }}" class="sidebar-item">
+            <i class="fa fa-heart"></i>
+            <span>Mental Health</span>
+        </a>
+        <a href="{{ url_for('insurance') }}" class="sidebar-item">
+            <i class="fa fa-shield"></i>
+            <span>Insurance</span>
+        </a>
+        <a href="{{ url_for('settings_page') }}" class="sidebar-item">
+            <i class="fa fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </div>
+</div>
+
+<div class="menu-overlay"></div>
+
+<div class="top-bar">
+    <div class="hamburger-menu">
+        <i class="fa fa-bars"></i>
+    </div>
+    <span class="brand">
+        <span class="heartbeat-icon slow"><i class="fa fa-plus-circle"></i></span>
+        Healthcare AI
+    </span>
+    {% if session.get('is_admin') %}
+    <a href="{{ url_for('admin_dashboard') }}" class="admin-dashboard-icon" title="Admin Panel">
+        <i class="fa fa-shield"></i>
+    </a>
+    {% endif %}
+    <div class="notification-bell" id="notif-bell" onclick="toggleNotifDropdown()" title="Notifications">
+        <i class="fa fa-bell"></i>
+        {% if notifications and notifications|length > 0 %}
+        <span class="notif-badge">{{ notifications|length }}</span>
+        {% endif %}
+    </div>
+    <div class="profile-dropdown" id="profile-dropdown">
+        <div class="profile-trigger" onclick="toggleProfileDropdown()">
+            <img src="{{ url_for('static', filename=profile_picture) }}" alt="Profile" class="profile-pic">
+            <span class="profile-username">{{ session.get('username', 'User') }}</span>
+            <i class="fa fa-chevron-down profile-arrow"></i>
+        </div>
+        <div class="profile-menu" id="profile-menu">
+            <a href="{{ url_for('settings_page') }}" class="profile-menu-item">
+                <i class="fa fa-edit"></i>
+                <span>Edit Profile</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="profile-menu-item">
+        <i class="fa fa-sign-out"></i>
+                <span>Logout</span>
+    </a>
+        </div>
+    </div>
+</div>
+
+<div class="notif-dropdown" id="notif-dropdown" style="display:none;">
+    <h4><i class="fa fa-bell"></i> Notifications</h4>
+    <div class="notif-dropdown-list">
+        {% if notifications and notifications|length > 0 %}
+            {% for notif in notifications %}
+            <div class="notif-dropdown-item" id="notif-{{ notif.id }}">
+                <span>{{ notif.message }}</span>
+                <button class="notif-close" onclick="markNotifRead({{ notif.id }}); event.stopPropagation();" title="Dismiss">&times;</button>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-notifs">No notifications</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Curved Main Content Container -->
+<div class="main-curved-container">
+    <!-- Professional Welcome Section -->
+    <div class="welcome-hero">
+        <div class="welcome-hero-overlay"></div>
+        <div class="welcome-hero-content">
+            <div class="welcome-hero-title">
+                {{ welcome_message }}
+            </div>
+            <div class="welcome-hero-desc">
+                Empowering your health journey with <span class="ai-highlight">AI-driven care</span> and personalized wellness tools.
+            </div>
+        </div>
+    </div>
+    <!-- End Professional Welcome Section -->
+    
+    <main class="main-content">
+<!-- Anchor targets for smooth scrolling -->
+<div id="help"></div>
+<div id="about"></div>
+<div id="privacy"></div>
+<div id="terms"></div>
+<div id="symptom-checker"></div>
+<div id="chat-assistant"></div>
+<div id="bmi-calculator"></div>
+<div id="appointments"></div>
+<div id="pill-reminder"></div>
+<div id="blood-donation"></div>
+<div id="mental-health"></div>
+<div id="insurance"></div>
+<div id="settings"></div>
+    
+    <div class="health-review-card" id="health-review">
+        <div class="review-info">
+            <span class="review-title"><i class="fa fa-bar-chart"></i> Health Review Status</span>
+            <span class="review-desc">View your health history and progress across all features.</span>
+        </div>
+            <a href="{{ url_for('review_status') }}" class="review-view-btn">View</a>
+    </div>
+    
+    <!-- Good Thoughts Section -->
+    <div class="good-thoughts-section" id="good-thoughts">
+        <div class="thoughts-container">
+            <h3><i class="fa fa-heart"></i> Daily Inspiration</h3>
+            <div class="thought-text" id="thought-text">
+                "Your health is an investment, not an expense."
+            </div>
+        </div>
+    </div>
+    
+    <!-- Health Tips Section -->
+    <div class="health-tips-section" id="health-tips">
+        <h2><i class="fa fa-lightbulb-o"></i> Health Tips</h2>
+        <div class="tips-container">
+            <a href="https://www.google.com/search?q=stay+hydrated+health+benefits+water+intake" target="_blank" class="tip-card-link">
+                <div class="tip-card">
+                    <div class="tip-image">
+                        <img src="https://i.pinimg.com/736x/19/2d/44/192d449a2ccf7d3d755e621dc5b7f2a0.jpg" alt="Water Bottle" class="hydration-image">
+                    </div>
+                    <h4>Stay Hydrated</h4>
+                    <p>Drink at least 8 glasses of water daily to maintain good health and energy levels.</p>
+                </div>
+            </a>
+            <a href="https://www.google.com/search?q=quality+sleep+health+benefits+7-9+hours" target="_blank" class="tip-card-link">
+                <div class="tip-card">
+                    <div class="tip-image">
+                        <img src="https://i.pinimg.com/736x/9b/e8/97/9be897508f377ef02719657308bd1b7a.jpg" alt="Quality Sleep" class="sleep-image">
+                    </div>
+                    <h4>Quality Sleep</h4>
+                    <p>Get 7-9 hours of sleep each night to support your immune system and mental health.</p>
+                </div>
+            </a>
+            <a href="https://www.google.com/search?q=balanced+diet+healthy+nutrition+fruits+vegetables" target="_blank" class="tip-card-link">
+                <div class="tip-card">
+                    <div class="tip-image">
+                        <img src="https://i.pinimg.com/736x/c8/a6/7e/c8a67e3a318a06b35e6fb2808232fd82.jpg" alt="Balanced Diet" class="diet-image">
+                    </div>
+                    <h4>Balanced Diet</h4>
+                    <p>Include fruits, vegetables, and whole grains in your daily meals for optimal nutrition.</p>
+                </div>
+            </a>
+            <a href="https://www.google.com/search?q=regular+exercise+30+minutes+physical+activity+benefits" target="_blank" class="tip-card-link">
+                <div class="tip-card">
+                    <div class="tip-image">
+                        <img src="https://i.pinimg.com/736x/2b/98/d4/2b98d4f641c16a4839f82310d921ff0a.jpg" alt="Regular Exercise" class="exercise-image">
+                    </div>
+                    <h4>Regular Exercise</h4>
+                    <p>Aim for at least 30 minutes of moderate physical activity most days of the week.</p>
+                </div>
+            </a>
+            <a href="https://www.google.com/search?q=mental+wellness+mindfulness+stress+management+techniques" target="_blank" class="tip-card-link">
+                <div class="tip-card">
+                    <div class="tip-image">
+                        <img src="https://i.pinimg.com/736x/73/f1/45/73f14554a8943c8bbc9cfff32a373d9e.jpg" alt="Mental Wellness" class="mental-wellness-image">
+                    </div>
+                    <h4>Mental Wellness</h4>
+                    <p>Practice mindfulness and stress management techniques for better mental health.</p>
+                </div>
+            </a>
+            <a href="https://www.google.com/search?q=regular+health+checkups+preventive+care+early+detection" target="_blank" class="tip-card-link">
+                <div class="tip-card">
+                    <div class="tip-image">
+                        <img src="https://i.pinimg.com/736x/d7/4f/0e/d74f0ea68e6817b51c5dbdeedd92edee.jpg" alt="Regular Checkups" class="checkups-image">
+                    </div>
+                    <h4>Regular Checkups</h4>
+                    <p>Schedule regular health checkups to catch potential issues early and stay proactive.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <h2 class="services-title">Our Services</h2>
+    <div class="card-container">
+        <a href="{{ url_for('symptom_checker') }}" class="feature-card"><i class="fa fa-stethoscope"></i><span>Symptom Checker</span></a>
+        <a href="{{ url_for('chat_assistant') }}" class="feature-card"><i class="fa fa-comments"></i><span>AI Health Chat Assistant</span></a>
+        <a href="{{ url_for('bmi_calculator') }}" class="feature-card"><i class="fa fa-calculator"></i><span>BMI Calculator</span></a>
+        <a href="{{ url_for('appointments') }}" class="feature-card"><i class="fa fa-calendar"></i><span>Appointments</span></a>
+        <a href="{{ url_for('pill_reminder') }}" class="feature-card"><i class="fa fa-bell"></i><span>Pill Reminder</span></a>
+        <a href="{{ url_for('blood_donation') }}" class="feature-card"><i class="fa fa-tint"></i><span>Blood Donation</span></a>
+        <a href="{{ url_for('mental_health') }}" class="feature-card"><i class="fa fa-heart"></i><span>Mental Health Support</span></a>
+        <a href="{{ url_for('insurance') }}" class="feature-card"><i class="fa fa-shield"></i><span>Insurance</span></a>
+    </div>
+    <div class="fitness-nutrition-section">
+        <h3 class="fitness-nutrition-title"><i class="fa fa-apple"></i> Fitness & Nutrition Hub</h3>
+        <div class="card-container">
+            <a href="{{ url_for('exercise_tutorials') }}" class="feature-card">
+                <img src="https://i.pinimg.com/736x/cd/42/41/cd424157304f11c81d051d2de3246226.jpg" alt="Exercise Tutorials" class="feature-card-img" style="width:150px;height:150px;border-radius:18px;margin-bottom:0;object-fit:cover;box-shadow:0 2px 12px rgba(44,62,80,0.18);display:block;margin-left:auto;margin-right:auto;">
+                <div class="feature-card-title" style="font-size:1.18rem;font-weight:700;color:#111;margin-top:8px;margin-bottom:2px;">Exercise Tutorials</div>
+                <div class="feature-card-desc" style="margin-top:4px;">Follow guided video workouts for all fitness levels.</div>
+            </a>
+            <a href="{{ url_for('diet_plan') }}" class="feature-card">
+                <img src="https://i.pinimg.com/736x/5e/e7/d8/5ee7d8c53c3ed7d201b9b2d06de91bb7.jpg" alt="Diet Plans" class="feature-card-img" style="width:150px;height:150px;border-radius:18px;margin-bottom:0;object-fit:cover;box-shadow:0 2px 12px rgba(44,62,80,0.18);display:block;margin-left:auto;margin-right:auto;">
+                <div class="feature-card-title" style="font-size:1.18rem;font-weight:700;color:#111;margin-top:8px;margin-bottom:2px;">Diet Plans</div>
+                <div class="feature-card-desc" style="margin-top:4px;">Personalized meal plans based on your BMI.</div>
+            </a>
+        </div>
+    </div>
+</main>
+</div>
+
+<!-- Footer Section -->
+<footer class="footer-section">
+    <div class="footer-content">
+        <div class="footer-column">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>Healthcare AI</span>
+                </div>
+                <p class="footer-description">
+                    Empowering your health journey with AI-powered tools and comprehensive healthcare solutions. 
+                    Your trusted partner for better health outcomes.
+                </p>
+            </div>
+            <div class="footer-contact" id="contact">
+                <h5><i class="fa fa-envelope"></i> <a href="mailto:support@healthcareai.com">support@healthcareai.com</a></h5>
+                <h5><i class="fa fa-phone"></i> <a href="tel:+15551234567">+1 (555) 123-4567</a></h5>
+                <h5><i class="fa fa-clock-o"></i> Mon-Fri: 9:00 AM - 6:00 PM EST</h5>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h4>Quick Access</h4>
+            <ul class="footer-links">
+                <li><a href="{{ url_for('symptom_checker') }}"><i class="fa fa-stethoscope"></i> Symptom Checker</a></li>
+                <li><a href="{{ url_for('chat_assistant') }}"><i class="fa fa-comments"></i> AI Health Chat</a></li>
+                <li><a href="{{ url_for('bmi_calculator') }}"><i class="fa fa-calculator"></i> BMI Calculator</a></li>
+                <li><a href="{{ url_for('appointments') }}"><i class="fa fa-calendar"></i> Appointments</a></li>
+                <li><a href="{{ url_for('pill_reminder') }}"><i class="fa fa-bell"></i> Pill Reminders</a></li>
+                <li><a href="{{ url_for('mental_health') }}"><i class="fa fa-heart"></i> Mental Health</a></li>
+                <li><a href="{{ url_for('review_status') }}"><i class="fa fa-bar-chart"></i> Health Review</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>Support & Resources</h4>
+            <ul class="footer-links">
+                <li><a href="{{ url_for('faq') }}"><i class="fa fa-question-circle"></i> FAQ</a></li>
+                <li><a href="mailto:support@healthcareai.com"><i class="fa fa-phone"></i> Contact Support</a></li>
+                <li><a href="{{ url_for('privacy') }}"><i class="fa fa-shield"></i> Privacy Policy</a></li>
+                <li><a href="{{ url_for('terms') }}"><i class="fa fa-file-text"></i> Terms of Service</a></li>
+                <li><a href="{{ url_for('home') }}#about"><i class="fa fa-info-circle"></i> About Us</a></li>
+                <li><a href="#resources"><i class="fa fa-globe"></i> Health Resources</a></li>
+            </ul>
+        </div>
+        <div class="footer-column" id="resources">
+            <h4>Health Resources</h4>
+            <ul class="footer-links">
+                <li><a href="https://www.google.com/search?q=World+Health+Organization" target="_blank"><i class="fa fa-globe"></i> World Health Organization</a></li>
+                <li><a href="https://www.google.com/search?q=Centers+for+Disease+Control+and+Prevention" target="_blank"><i class="fa fa-medkit"></i> Centers for Disease Control</a></li>
+                <li><a href="https://www.google.com/search?q=Mayo+Clinic" target="_blank"><i class="fa fa-hospital-o"></i> Mayo Clinic</a></li>
+                <li><a href="https://www.google.com/search?q=WebMD" target="_blank"><i class="fa fa-search"></i> WebMD</a></li>
+                <li><a href="https://www.google.com/search?q=National+Institutes+of+Health" target="_blank"><i class="fa fa-flask"></i> National Institutes of Health</a></li>
+                <li><a href="https://www.google.com/search?q=Healthline" target="_blank"><i class="fa fa-newspaper-o"></i> Healthline</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>Stay Connected</h4>
+            <div class="social-links">
+                <a href="https://facebook.com/" target="_blank" title="Follow us on Facebook" class="social-link facebook"><i class="fa fa-facebook"></i></a>
+                <a href="https://twitter.com/" target="_blank" title="Follow us on Twitter" class="social-link twitter"><i class="fa fa-twitter"></i></a>
+                <a href="https://instagram.com/" target="_blank" title="Follow us on Instagram" class="social-link instagram"><i class="fa fa-instagram"></i></a>
+                <a href="https://linkedin.com/" target="_blank" title="Connect on LinkedIn" class="social-link linkedin"><i class="fa fa-linkedin"></i></a>
+                <a href="https://youtube.com/" target="_blank" title="Subscribe on YouTube" class="social-link youtube"><i class="fa fa-youtube"></i></a>
+                <a href="https://pinterest.com/" target="_blank" title="Follow us on Pinterest" class="social-link pinterest"><i class="fa fa-pinterest"></i></a>
+            </div>
+            <div class="newsletter-signup" id="newsletter">
+                <h5><i class="fa fa-envelope-o"></i> Get Health Updates</h5>
+                <p>Subscribe to receive the latest health tips, app updates, and wellness insights.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" id="newsletter-email">
+                    <button onclick="subscribeNewsletter()">
+                        <i class="fa fa-paper-plane"></i> Subscribe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-bottom-content">
+            <div class="footer-copyright">
+                <p>&copy; 2024 Healthcare AI. All rights reserved. | Designed with <i class="fa fa-heart"></i> for better health outcomes</p>
+                <p class="footer-version">Version 1.0.0 | Last updated: December 2024</p>
+            </div>
+            <div class="footer-bottom-links">
+                <a href="{{ url_for('privacy') }}">Privacy</a>
+                <span class="separator">|</span>
+                <a href="{{ url_for('terms') }}">Terms</a>
+                <span class="separator">|</span>
+                <a href="mailto:support@healthcareai.com">Contact</a>
+                <span class="separator">|</span>
+                <a href="{{ url_for('faq') }}">FAQ</a>
+                <span class="separator">|</span>
+                <a href="{{ url_for('home') }}#about">About</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hamburger = document.querySelector('.hamburger-menu');
+    const sidebar = document.querySelector('.sidebar');
+    const closeBtn = document.querySelector('.close-btn');
+    const overlay = document.querySelector('.menu-overlay');
+
+    hamburger.addEventListener('click', function() {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+    });
+
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+});
+
+function markNotifRead(notifId) {
+    fetch(`/notifications/read/${notifId}`, {method: 'POST'})
+        .then(() => {
+            const el = document.getElementById('notif-' + notifId);
+            if (el) el.style.display = 'none';
+        });
+}
+
+function toggleNotifDropdown() {
+    const dropdown = document.getElementById('notif-dropdown');
+    if (dropdown.style.display === 'none') {
+        dropdown.style.display = 'block';
+    } else {
+        dropdown.style.display = 'none';
+    }
+}
+
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    const menu = document.getElementById('profile-menu');
+    
+    // Close notification dropdown if open
+    const notifDropdown = document.getElementById('notif-dropdown');
+    if (notifDropdown.style.display === 'block') {
+        notifDropdown.style.display = 'none';
+    }
+    
+    // Toggle profile dropdown
+    if (dropdown.classList.contains('active')) {
+        dropdown.classList.remove('active');
+        menu.style.display = 'none';
+    } else {
+        dropdown.classList.add('active');
+        menu.style.display = 'block';
+    }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const notifDropdown = document.getElementById('notif-dropdown');
+    
+    // Close profile dropdown if clicking outside
+    if (!profileDropdown.contains(event.target)) {
+        profileDropdown.classList.remove('active');
+        document.getElementById('profile-menu').style.display = 'none';
+    }
+    
+    // Close notification dropdown if clicking outside
+    if (!notifDropdown.contains(event.target) && !document.getElementById('notif-bell').contains(event.target)) {
+        notifDropdown.style.display = 'none';
+    }
+});
+
+// Good Thoughts Auto-Changing
+const thoughts = [
+    "Your health is an investment, not an expense.",
+    "Every day is a new opportunity to be healthier.",
+    "Small changes today lead to big results tomorrow.",
+    "Your body hears everything your mind says.",
+    "Health is the greatest gift, contentment the greatest wealth.",
+    "Take care of your body, it's the only place you have to live.",
+    "Wellness is not a destination, it's a way of life.",
+    "The greatest wealth is health.",
+    "Your future self is watching you right now through memories.",
+    "Make yourself proud by taking care of your health.",
+    "Health is not about the weight you lose, but the life you gain.",
+    "Every healthy choice you make is a step toward a better you.",
+    "Your health is your responsibility, your wealth is your reward.",
+    "The only bad workout is the one that didn't happen.",
+    "Progress, not perfection, is the goal."
+];
+
+let currentThoughtIndex = 0;
+const thoughtElement = document.getElementById('thought-text');
+
+function changeThought() {
+    thoughtElement.style.opacity = '0';
+    
+    setTimeout(() => {
+        currentThoughtIndex = (currentThoughtIndex + 1) % thoughts.length;
+        thoughtElement.textContent = thoughts[currentThoughtIndex];
+        thoughtElement.style.opacity = '1';
+    }, 500);
+}
+
+// Change thought every 10 seconds
+setInterval(changeThought, 10000);
+
+// Footer Functions
+function showHelp() {
+    alert('Help & FAQ\n\n' +
+          '• How to use Symptom Checker: Select your symptoms and get AI-powered health insights\n' +
+          '• BMI Calculator: Enter your height and weight to calculate your BMI\n' +
+          '• Appointments: Book and manage your healthcare appointments\n' +
+          '• Pill Reminders: Set reminders for your medications\n' +
+          '• AI Health Chat: Ask health-related questions to our AI assistant\n\n' +
+          'For more detailed help, please contact our support team.');
+}
+
+function showContact() {
+    alert('Contact Us\n\n' +
+          '📧 Email: support@healthcareai.com\n' +
+          '📞 Phone: +1 (555) 123-4567\n' +
+          '🏢 Address: 123 Health Street, Medical District, City, State 12345\n' +
+          '⏰ Support Hours: Monday - Friday, 9:00 AM - 6:00 PM EST\n\n' +
+          'We\'re here to help with any questions or concerns!');
+}
+
+function showPrivacy() {
+    alert('Privacy Policy\n\n' +
+          'Your privacy is important to us. This policy describes how we collect, use, and protect your personal information.\n\n' +
+          '• We collect only necessary health information to provide our services\n' +
+          '• Your data is encrypted and stored securely\n' +
+          '• We never share your personal information with third parties\n' +
+          '• You can request deletion of your data at any time\n\n' +
+          'For the complete privacy policy, please visit our website.');
+}
+
+function showTerms() {
+    alert('Terms of Service\n\n' +
+          'By using Healthcare AI, you agree to:\n\n' +
+          '• Use the service for personal health information only\n' +
+          '• Not share your account credentials\n' +
+          '• Understand that AI recommendations are not medical advice\n' +
+          '• Consult healthcare professionals for serious health concerns\n' +
+          '• Accept that we may update these terms periodically\n\n' +
+          'For complete terms, please visit our website.');
+}
+
+function showAbout() {
+    alert('About Healthcare AI\n\n' +
+          'Healthcare AI is an innovative platform designed to support your health journey through AI-powered tools and resources.\n\n' +
+          'Our Mission:\n' +
+          'To make healthcare information accessible and empower individuals to take control of their health.\n\n' +
+          'Features:\n' +
+          '• AI-powered symptom checking\n' +
+          '• Health monitoring tools\n' +
+          '• Appointment management\n' +
+          '• Medication reminders\n' +
+          '• Mental health support\n\n' +
+          'Version: 1.0.0');
+}
+
+function subscribeNewsletter() {
+    const email = document.getElementById('newsletter-email').value;
+    if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+    }
+    
+    alert('Thank you for subscribing to our newsletter!\n\n' +
+          'You\'ll receive updates about:\n' +
+          '• New health features\n' +
+          '• Wellness tips\n' +
+          '• Health news\n' +
+          '• App updates\n\n' +
+          'We\'ve sent a confirmation email to: ' + email);
+    
+    document.getElementById('newsletter-email').value = '';
+}
+</script>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #f4f8fc;
+    /* Remove any border or box-shadow */
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.main-content {
+    margin-top: 80px;
+    padding: 2em;
+    min-height: calc(100vh - 80px);
+    background: #f4f8fc;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.health-review-card {
+    /* Remove border if present */
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(44, 62, 80, 0.08);
+}
+
+.good-thoughts-section {
+    /* Remove border if present */
+    border: none !important;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+}
+
+.notification-bar {
+    width: 100%;
+    background: #f0f7ff;
+    border-bottom: 1.5px solid #4f8cff;
+    padding: 0.7em 0.5em 0.7em 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+}
+.notification-item {
+    background: #fff;
+    border: 1.5px solid #e3e8ee;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    color: #2d3e50;
+    font-size: 1rem;
+    margin: 0.3em 0;
+    padding: 0.7em 2.5em 0.7em 1em;
+    min-width: 260px;
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.notif-close {
+    background: none;
+    border: none;
+    color: #e53935;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 0.7em;
+    top: 0.5em;
+    line-height: 1;
+}
+.notif-close:hover {
+    color: #b71c1c;
+}
+.notification-center {
+    width: 100%;
+    background: #fffbe7;
+    border-bottom: 2px solid #ffe082;
+    padding: 1.2em 0.5em 1.2em 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.08);
+    margin-bottom: 1.5em;
+}
+.notification-center h3 {
+    margin: 0 0 0.7em 0;
+    font-size: 1.15rem;
+    color: #ff9800;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.notification-list {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+}
+.notification-item {
+    background: #fffde7;
+    border: 1.5px solid #ffe082;
+    border-radius: 8px;
+    color: #2d3e50;
+    font-size: 1rem;
+    padding: 0.7em 2.5em 0.7em 1em;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.notif-close {
+    background: none;
+    border: none;
+    color: #e53935;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 0.7em;
+    top: 0.5em;
+    line-height: 1;
+}
+.notif-close:hover {
+    color: #b71c1c;
+}
+.notification-bell {
+    position: relative;
+    margin: 0 1.2em 0 0.5em;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.3em;
+    color: #ff9800;
+    transition: color 0.15s;
+}
+.notification-bell:hover {
+    color: #e65100;
+}
+.notif-badge {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    background: #e53935;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 7px;
+    min-width: 22px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(229,57,53,0.13);
+    border: 2px solid #fff;
+}
+.notif-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 2.5em;
+    background: #fff;
+    border: 1.5px solid #ffe082;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.13);
+    min-width: 320px;
+    max-width: 400px;
+    z-index: 9999;
+    padding: 1em 1.2em 1em 1.2em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+}
+.notif-dropdown h4 {
+    margin: 0 0 0.7em 0;
+    font-size: 1.08rem;
+    color: #ff9800;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.notif-dropdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.notif-dropdown-item {
+    background: #fffde7;
+    border: 1.5px solid #ffe082;
+    border-radius: 8px;
+    color: #2d3e50;
+    font-size: 1rem;
+    padding: 0.7em 2.5em 0.7em 1em;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.no-notifs {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 1.5em 0;
+}
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1.5px solid #e3e8ee;
+    padding: 0.8em 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+.hamburger-menu {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #4f8cff;
+    margin-right: 1em;
+}
+.brand {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2d3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    flex: 1;
+}
+.heartbeat-icon {
+    color: #4f8cff;
+    animation: heartbeat 2s infinite;
+}
+.heartbeat-icon.slow {
+    animation-duration: 3s;
+}
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+.admin-dashboard-icon, .notification-bell, .logout-btn {
+    margin-left: 1em;
+    font-size: 1.2rem;
+    color: #4f8cff;
+    text-decoration: none;
+    transition: color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.15s;
+}
+.admin-dashboard-icon:hover, .notification-bell:hover, .logout-btn:hover {
+    color: #2d3e50;
+    background: #f0f7ff;
+}
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    color: #ff9800;
+}
+.notification-bell:hover {
+    color: #e65100;
+    background: #fff8e1;
+}
+.main-content {
+    margin-top: 80px;
+    padding: 2em;
+    min-height: calc(100vh - 80px);
+    background: #f4f8fc;
+}
+
+/* Good Thoughts Section */
+.good-thoughts-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 2em;
+    margin: 2em 0;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.thoughts-container h3 {
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+}
+.thought-text {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.6;
+    min-height: 2.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Health Tips Section */
+.health-tips-section {
+    margin: 3em 0;
+}
+.health-tips-section h2 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3e50;
+    margin-bottom: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+}
+.tips-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2em;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.tip-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2em;
+    box-shadow: 0 4px 20px rgba(44, 62, 80, 0.08);
+    border: 1.5px solid #e3e8ee;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+.tip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(44, 62, 80, 0.12);
+    border-color: #4f8cff;
+}
+.tip-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4f8cff, #38b6ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5em auto;
+    box-shadow: 0 4px 16px rgba(79, 140, 255, 0.2);
+}
+.tip-icon i {
+    font-size: 2rem;
+    color: #fff;
+}
+.tip-card h4 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2d3e50;
+    margin-bottom: 1em;
+}
+.tip-card p {
+    color: #6c757d;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+.tip-image {
+    margin: 1em 0;
+    text-align: center;
+}
+.hydration-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 1em;
+}
+.hydration-image:hover {
+    transform: scale(1.05);
+}
+.sleep-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 1em;
+}
+.sleep-image:hover {
+    transform: scale(1.05);
+}
+.diet-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 1em;
+}
+.diet-image:hover {
+    transform: scale(1.05);
+}
+.exercise-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 1em;
+}
+.exercise-image:hover {
+    transform: scale(1.05);
+}
+.mental-wellness-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 1em;
+}
+.mental-wellness-image:hover {
+    transform: scale(1.05);
+}
+.checkups-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 1em;
+}
+.checkups-image:hover {
+    transform: scale(1.05);
+}
+.tip-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.3s ease;
+}
+.tip-card-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+.tip-card-link:hover .tip-card {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(44, 62, 80, 0.12);
+    border-color: #4f8cff;
+}
+
+/* Footer Section */
+.footer-section {
+    background: linear-gradient(135deg, #1a252f 0%, #2d3e50 50%, #34495e 100%);
+    color: #fff;
+    margin-top: 4em;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #4f8cff, transparent);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+    gap: 3em;
+    margin-bottom: 2em;
+}
+
+.footer-column h4 {
+    color: #4f8cff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.5em;
+    position: relative;
+    padding-bottom: 0.8em;
+}
+
+.footer-column h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #4f8cff, #38b6ff);
+    border-radius: 2px;
+}
+
+.footer-brand {
+    margin-bottom: 2em;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    margin-bottom: 1.5em;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #4f8cff;
+}
+
+.footer-logo i {
+    font-size: 2.2rem;
+    color: #4f8cff;
+}
+
+.footer-description {
+    color: #bdc3c7;
+    line-height: 1.7;
+    font-size: 1rem;
+    margin-bottom: 2em;
+}
+
+.footer-contact h5 {
+    color: #ecf0f1;
+    font-size: 0.95rem;
+    margin-bottom: 1em;
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    font-weight: 500;
+}
+
+.footer-contact h5 i {
+    color: #4f8cff;
+    width: 20px;
+    text-align: center;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 1em;
+}
+
+.footer-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    padding: 0.5em 0;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.footer-links a i {
+    color: #4f8cff;
+    width: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: #4f8cff;
+    background: rgba(79, 140, 255, 0.1);
+    padding-left: 0.5em;
+    transform: translateX(5px);
+}
+
+.social-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+    margin-bottom: 2em;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.social-link:hover::before {
+    opacity: 1;
+}
+
+.social-link.facebook { background: linear-gradient(135deg, #1877f2, #0d6efd); }
+.social-link.twitter { background: linear-gradient(135deg, #1da1f2, #0ea5e9); }
+.social-link.instagram { background: linear-gradient(135deg, #e4405f, #f77737); }
+.social-link.linkedin { background: linear-gradient(135deg, #0077b5, #0a66c2); }
+.social-link.youtube { background: linear-gradient(135deg, #ff0000, #dc2626); }
+.social-link.pinterest { background: linear-gradient(135deg, #bd081c, #dc2626); }
+
+.social-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.newsletter-signup h5 {
+    color: #4f8cff;
+    font-size: 1.1rem;
+    margin-bottom: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.newsletter-signup p {
+    color: #bdc3c7;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1.5em;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 0.8em;
+    margin-bottom: 1em;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 1em;
+    border: 2px solid #34495e;
+    border-radius: 10px;
+    background: #2d3e50;
+    color: #fff;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.newsletter-form input:focus {
+    outline: none;
+    border-color: #4f8cff;
+    background: #34495e;
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.1);
+}
+
+.newsletter-form input::placeholder {
+    color: #95a5a6;
+}
+
+.newsletter-form button {
+    padding: 1em 1.5em;
+    background: linear-gradient(135deg, #4f8cff, #38b6ff);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    white-space: nowrap;
+}
+
+.newsletter-form button:hover {
+    background: linear-gradient(135deg, #2d3e50, #34495e);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 140, 255, 0.3);
+}
+
+.footer-bottom {
+    background: #1a252f;
+    padding: 2em;
+    border-top: 1px solid #34495e;
+    position: relative;
+}
+
+.footer-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #4f8cff, transparent);
+}
+
+.footer-bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 2em;
+}
+
+.footer-copyright p {
+    color: #bdc3c7;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.footer-version {
+    color: #95a5a6 !important;
+    font-size: 0.8rem !important;
+    margin-top: 0.5em !important;
+}
+
+.footer-bottom-content .fa-heart {
+    color: #e74c3c;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.footer-bottom-links {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.footer-bottom-links a {
+    color: #bdc3c7;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+.footer-bottom-links a:hover {
+    color: #4f8cff;
+}
+
+.footer-bottom-links .separator {
+    color: #34495e;
+    font-weight: 300;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@media (max-width: 1200px) {
+    .footer-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 2em;
+    }
+    
+    .footer-column:first-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2em;
+    }
+    
+    .footer-bottom-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1em;
+    }
+    
+    .footer-bottom-links {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+    
+    .social-links {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8em;
+    }
+    
+    .social-link {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}
+
+.main-curved-container {
+    max-width: 1200px;
+    margin: 40px auto 40px auto;
+    background: #fff;
+    border-radius: 32px;
+    box-shadow: 0 8px 40px rgba(44, 62, 80, 0.13);
+    padding: 3em 2.5em 2.5em 2.5em;
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 1300px) {
+    .main-curved-container {
+        max-width: 98vw;
+        padding: 2em 1em 1em 1em;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-curved-container {
+        border-radius: 18px;
+        padding: 1em 0.5em 1em 0.5em;
+        margin: 16px 0 16px 0;
+    }
+}
+
+/* Anchor targets for footer links */
+#help, #about, #privacy, #terms, #symptom-checker, #chat-assistant, #bmi-calculator, #appointments, #pill-reminder, #blood-donation, #mental-health, #insurance, #settings {
+    display: block;
+    position: relative;
+    top: -90px; /* offset for fixed top bar */
+    height: 1px;
+    width: 100%;
+    visibility: hidden;
+}
+
+.fitness-nutrition-section {
+    margin-top: 36px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+.fitness-nutrition-title {
+    color: #4f8cff;
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.fitness-nutrition-section .card-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+.fitness-nutrition-section .feature-card {
+    min-width: 260px;
+    max-width: 360px;
+    padding: 38px 24px 32px 24px;
+    font-size: 1.18rem;
+    box-shadow: 0 6px 28px rgba(44,62,80,0.16);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.fitness-nutrition-section .feature-card-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 18px;
+    margin-bottom: 14px;
+    object-fit: cover;
+    box-shadow: 0 2px 12px rgba(44,62,80,0.18);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.fitness-nutrition-section .feature-card i {
+    font-size: 2.6rem !important;
+}
+.fitness-nutrition-section .feature-card span {
+    font-size: 1.18rem;
+    font-weight: 700;
+    margin-top: 12px;
+    display: block;
+}
+.feature-card-desc {
+    color: #b0c7e6;
+    font-size: 1.01rem;
+    margin-top: 6px;
+    margin-bottom: 0;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.3;
+}
+</style>
+</body>
+</html>
